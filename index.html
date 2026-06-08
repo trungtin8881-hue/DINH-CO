@@ -1720,7 +1720,7 @@ function exportData() {
   closeMoreSheet();
   try {
     const json     = JSON.stringify(db, null, 2);
-    const filename = `dinh-co-backup-${new Date().toISOString().slice(0,10)}.json`;
+    const filename = `DINHCO_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
     const ua       = navigator.userAgent || '';
     const isIOS    = /iP(hone|ad|od)/i.test(ua);
     const isAndroid = /Android/i.test(ua);
@@ -1733,7 +1733,7 @@ function exportData() {
       a.href = url; a.download = filename;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1500);
-      showToast('✅ File đã tải về — xem trong Downloads');
+      showToast(`✅ Backup hoàn tất\nFile: ${filename}`);
       return;
     }
 
