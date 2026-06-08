@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ĐỊNH CƠ — AI Finance Coach</title>
-<!-- v27: FAB + first-time sample data + sample banner — optimised for first paying user -->
+<!-- v29: Onboarding 3-step + Import UX rebuilt + Mobile touch targets -->
 
 <!-- ── v22: Brand meta ── -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -698,7 +698,7 @@ textarea { resize: vertical; min-height: 60px; }
 .fab {
   display: none;
   position: fixed;
-  bottom: 84px; /* above bottom nav */
+  bottom: 90px; /* above bottom nav — safe on all phones */
   right: 20px;
   width: 56px; height: 56px;
   border-radius: 50%;
@@ -733,6 +733,67 @@ textarea { resize: vertical; min-height: 60px; }
   font-family: inherit;
 }
 .sample-banner-clear:hover { background: #eff6ff; }
+
+
+/* ── ONBOARDING ─────────────────────────────────────────── */
+.onboard-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(15,23,42,.7);
+  align-items: flex-end; justify-content: center;
+}
+.onboard-overlay.open { display: flex; }
+.onboard-sheet {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 480px;
+  padding: 16px 24px calc(32px + env(safe-area-inset-bottom));
+  animation: slideUp .25s ease;
+}
+.onboard-handle {
+  width: 40px; height: 4px; background: #e2e8f0;
+  border-radius: 2px; margin: 0 auto 24px;
+}
+.onboard-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 24px;
+}
+.onboard-step-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--primary-light); color: var(--primary);
+  font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.onboard-step-body { flex: 1; }
+.onboard-step-title {
+  font-size: 15px; font-weight: 700; color: #0f172a;
+  margin-bottom: 3px;
+}
+.onboard-step-desc { font-size: 13px; color: #64748b; line-height: 1.5; }
+.onboard-step-icon { font-size: 22px; margin-bottom: 4px; }
+.onboard-divider {
+  width: 2px; height: 20px; background: #e2e8f0;
+  margin: 0 0 4px 17px;
+}
+.onboard-cta {
+  width: 100%; padding: 16px;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 14px;
+  font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  margin-top: 4px;
+}
+.onboard-cta:active { opacity: .88; }
+
+
+/* ── Mobile touch targets (iOS HIG: min 44px) ── */
+@media (max-width: 768px) {
+  .btn, button.btn { min-height: 44px; }
+  .nav-item-mobile { min-height: 48px; }
+  input, select, textarea { min-height: 44px; font-size: 16px !important; }
+  /* Prevent iOS auto-zoom on input focus (font-size must be >= 16px) */
+}
 
 </style>
 </head>
@@ -774,8 +835,8 @@ textarea { resize: vertical; min-height: 60px; }
         <span class="w-text">Có thể sao lưu bất cứ lúc nào</span>
       </div>
     </div>
-    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:12px;justify-content:center;" onclick="closeWelcome()">
-      Bắt đầu sử dụng
+    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:12px;justify-content:center;" onclick="closeWelcome()" style="width:100%;padding:16px;font-size:16px;border-radius:14px;justify-content:center;min-height:54px;">
+      Bắt đầu →
     </button>
     <div class="welcome-by">BY NGUYỄN TRUNG TÍN</div>
   </div>
@@ -1431,7 +1492,21 @@ function showToast(msg, duration=2400) {
 function closeWelcome() {
   localStorage.setItem('welcomeSeen', 'true');
   document.getElementById('welcome-overlay').classList.remove('open');
+  // Show onboarding only on first-ever open
+  if (!localStorage.getItem('dc_onboarded')) {
+    setTimeout(() => {
+      document.getElementById('onboard-overlay').classList.add('open');
+    }, 300);
+  }
 }
+
+function closeOnboarding() {
+  localStorage.setItem('dc_onboarded', '1');
+  document.getElementById('onboard-overlay').classList.remove('open');
+  // Open "Thêm giao dịch" modal immediately — first action is clear
+  setTimeout(() => openModal(), 200);
+}
+
 function initWelcome() {
   if (!localStorage.getItem('welcomeSeen')) {
     document.getElementById('welcome-overlay').classList.add('open');
@@ -1705,102 +1780,286 @@ function _showExportCopy(json, filename) {
   setTimeout(() => document.getElementById('_exp_ta')?.select(), 300);
 }
 
+// ── IMPORT FLOW — Định Cơ Product Principle: "Chỉ cần chạm" ──────────────
+// Flow: Tap → Hướng dẫn 3 dòng → Chọn file → Xong.
+// Không có confirm đỏ. Không có kỹ thuật. Không có suy nghĩ.
+
 function importData() {
   if (typeof closeMoreSheet === 'function') closeMoreSheet();
-  const hasData = db.transactions.length > 0 || db.goals.length > 0;
-  function _doImport() {
-    const input  = document.createElement('input');
-    input.type   = 'file';
-    input.accept = '.json,application/json';
-    input.onchange = function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      if (file.size > 5 * 1024 * 1024) { showToast('❌ File quá lớn (tối đa 5MB)'); return; }
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        try {
-          const parsed = JSON.parse(ev.target.result);
-          if (typeof parsed !== 'object' || parsed === null) throw new Error('Not an object');
-          if (!Array.isArray(parsed.transactions)) throw new Error('Missing transactions array');
-          const sanitizedTx = parsed.transactions.map(t => ({
-            id:     t.id     || Date.now() + Math.random(),
-            name:   String(t.name   || '').slice(0,120),
-            amount: Math.abs(parseFloat(t.amount) || 0),
-            type:   t.type === 'income' ? 'income' : 'expense',
-            cat:    String(t.cat  || 'Khác'),
-            date:   String(t.date || new Date().toISOString().split('T')[0]),
-            note:   String(t.note || '').slice(0,300),
-          })).filter(t => t.amount > 0 && t.name);
-          const sanitizedGoals = Array.isArray(parsed.goals)
-            ? parsed.goals.map(g => ({
-                id:      g.id      || Date.now() + Math.random(),
-                name:    String(g.name    || '').slice(0,80),
-                icon:    String(g.icon    || '🎯'),
-                target:  Math.abs(parseFloat(g.target)  || 0),
-                current: Math.abs(parseFloat(g.current) || 0),
-              })).filter(g => g.name && g.target > 0)
-            : [];
-          db.transactions = sanitizedTx;
-          db.goals        = sanitizedGoals;
-          if (parsed.txType) db.txType = parsed.txType;
-          saveDb();
-          renderDashboard();
-          if (document.getElementById('page-transactions').classList.contains('active')) renderTxList();
-          if (document.getElementById('page-goals').classList.contains('active')) renderGoals();
-          _showImportSuccess(sanitizedTx.length, sanitizedGoals.length);
-        } catch(err) { console.error('[importData]', err); _showImportError(err.message); }
-      };
-      reader.onerror = () => showToast('❌ Không thể đọc file');
-      reader.readAsText(file, 'UTF-8');
+  _showImportGuide();
+}
+
+function _showImportGuide() {
+  document.getElementById('_import_modal')?.remove();
+
+  const modal = document.createElement('div');
+  modal.id = '_import_modal';
+  modal.style.cssText = [
+    'position:fixed;inset:0;z-index:600',
+    'background:rgba(15,23,42,.65)',
+    'display:flex;align-items:flex-end;justify-content:center',
+    'animation:fadeIn .18s ease',
+  ].join(';');
+
+  modal.innerHTML = `
+    <div style="
+      background:#fff; border-radius:24px 24px 0 0;
+      width:100%; max-width:480px;
+      padding:12px 24px calc(32px + env(safe-area-inset-bottom));
+      animation:slideUp .22s ease;
+    ">
+      <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 20px;"></div>
+
+      <!-- Header -->
+      <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:4px;">
+        Khôi phục dữ liệu 📂
+      </div>
+      <div style="font-size:13px;color:#64748b;margin-bottom:20px;">
+        Chọn file backup bạn đã tạo từ ĐỊNH CƠ.
+      </div>
+
+      <!-- Step 1 -->
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">
+        <div style="
+          width:28px;height:28px;border-radius:50%;
+          background:#eff6ff;color:#2563eb;
+          font-size:13px;font-weight:700;
+          display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        ">1</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
+            Tìm file backup ĐỊNH CƠ
+          </div>
+          <div style="font-size:12px;color:#94a3b8;font-family:monospace;
+            background:#f8fafc;padding:4px 8px;border-radius:6px;margin-top:4px;display:inline-block;">
+            dinh-co-backup-2026-06-08.json
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">
+        <div style="
+          width:28px;height:28px;border-radius:50%;
+          background:#eff6ff;color:#2563eb;
+          font-size:13px;font-weight:700;
+          display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        ">2</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
+            Nếu vừa tải về → mở <b>Downloads</b>
+          </div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">
+            iPhone: Ứng dụng <b>Files</b> → Recents<br>
+            Android: Ứng dụng <b>Files</b> → Downloads
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;">
+        <div style="
+          width:28px;height:28px;border-radius:50%;
+          background:#eff6ff;color:#2563eb;
+          font-size:13px;font-weight:700;
+          display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        ">3</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
+            Bấm "Chọn file" để khôi phục
+          </div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">
+            Dữ liệu sẽ tự động được khôi phục.
+          </div>
+        </div>
+      </div>
+
+      <!-- Note — không dọa, không kỹ thuật -->
+      <div style="
+        background:#fefce8;border-radius:10px;
+        padding:10px 12px;margin-bottom:20px;
+        display:flex;gap:8px;align-items:flex-start;
+      ">
+        <span style="font-size:14px;flex-shrink:0;">💡</span>
+        <span style="font-size:12px;color:#92400e;line-height:1.5;">
+          Dữ liệu hiện tại sẽ được thay bằng dữ liệu trong file backup.
+        </span>
+      </div>
+
+      <!-- CTA to, rõ -->
+      <button id="_imp_pick_btn" style="
+        width:100%;padding:16px;
+        background:#2563eb;color:#fff;
+        border:none;border-radius:14px;
+        font-size:16px;font-weight:700;
+        cursor:pointer;font-family:inherit;
+        display:flex;align-items:center;justify-content:center;gap:8px;
+      ">
+        📂&nbsp; Chọn file
+      </button>
+      <button onclick="document.getElementById('_import_modal')?.remove()" style="
+        width:100%;padding:14px;margin-top:8px;
+        background:none;border:none;
+        font-size:15px;color:#94a3b8;
+        cursor:pointer;font-family:inherit;
+      ">Hủy</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.getElementById('_imp_pick_btn').addEventListener('click', () => _runFilePicker(modal));
+}
+
+function _runFilePicker(modal) {
+  const btn = document.getElementById('_imp_pick_btn');
+  if (btn) { btn.textContent = '⏳ Đang xử lý...'; btn.disabled = true; }
+
+  const input  = document.createElement('input');
+  input.type   = 'file';
+  input.accept = '.json,application/json';
+
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) {
+      // User cancelled file picker — reset button
+      if (btn) { btn.innerHTML = '📂 Chọn file backup'; btn.disabled = false; }
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      modal?.remove();
+      _showImportResult('error', 'File quá lớn', 'File backup không được vượt quá 5MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+
+        // Validate
+        if (typeof parsed !== 'object' || parsed === null)
+          throw new Error('Không đúng định dạng');
+        if (!Array.isArray(parsed.transactions))
+          throw new Error('File không phải backup của Định Cơ');
+
+        // Sanitize transactions
+        const txs = parsed.transactions.map(t => ({
+          id:     t.id     || Date.now() + Math.random(),
+          name:   String(t.name   || '').slice(0, 120),
+          amount: Math.abs(parseFloat(t.amount) || 0),
+          type:   t.type === 'income' ? 'income' : 'expense',
+          cat:    String(t.cat  || 'Khác'),
+          date:   String(t.date || new Date().toISOString().split('T')[0]),
+          note:   String(t.note || '').slice(0, 300),
+        })).filter(t => t.amount > 0 && t.name);
+
+        // Sanitize goals
+        const goals = Array.isArray(parsed.goals)
+          ? parsed.goals.map(g => ({
+              id:      g.id      || Date.now() + Math.random(),
+              name:    String(g.name    || '').slice(0, 80),
+              icon:    String(g.icon    || '🎯'),
+              target:  Math.abs(parseFloat(g.target)  || 0),
+              current: Math.abs(parseFloat(g.current) || 0),
+            })).filter(g => g.name && g.target > 0)
+          : [];
+
+        // Apply
+        db.transactions  = txs;
+        db.goals         = goals;
+        db._isSample     = false;
+        if (parsed.txType) db.txType = parsed.txType;
+        saveDb();
+
+        // Refresh UI
+        renderDashboard();
+        const txPage = document.getElementById('page-transactions');
+        if (txPage?.classList.contains('active')) renderTxList();
+        const goalPage = document.getElementById('page-goals');
+        if (goalPage?.classList.contains('active')) renderGoals();
+
+        // Close guide modal → show success
+        modal?.remove();
+        _showImportResult('success', txs.length, goals.length);
+
+      } catch(err) {
+        console.error('[import]', err);
+        modal?.remove();
+        _showImportResult('error', 'File không đúng', 'Vui lòng chọn file backup được tạo từ ĐỊNH CƠ.');
+      }
     };
-    input.click();
-  }
-  if (hasData) _showImportConfirm(_doImport);
-  else         _doImport();
+
+    reader.onerror = () => {
+      modal?.remove();
+      _showImportResult('error', 'Không thể đọc file', 'Hãy thử lại hoặc chọn file khác.');
+    };
+
+    reader.readAsText(file, 'UTF-8');
+  };
+
+  input.click();
 }
 
-function _showImportConfirm(onConfirm) {
+function _showImportResult(type, arg1, arg2) {
+  const isSuccess = type === 'success';
   const ov = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
-  ov.innerHTML = `<div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;">
-    <div style="font-size:28px;margin-bottom:10px;">⚠️</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#1a202c;">Ghi đè dữ liệu hiện tại?</div>
-    <div style="font-size:13px;color:#718096;line-height:1.7;margin-bottom:20px;">
-      Dữ liệu hiện tại (<b>${db.transactions.length} giao dịch</b>, <b>${db.goals.length} mục tiêu</b>) sẽ bị <b style="color:#dc2626;">xóa hoàn toàn</b>.<br>Nếu chưa sao lưu, hãy <b>Xuất dữ liệu</b> trước.
+  ov.style.cssText = [
+    'position:fixed;inset:0;z-index:600',
+    'background:rgba(15,23,42,.6)',
+    'display:flex;align-items:center;justify-content:center;padding:24px',
+  ].join(';');
+
+  ov.innerHTML = isSuccess ? `
+    <div style="
+      background:#fff;border-radius:20px;
+      padding:32px 24px;max-width:340px;width:100%;
+      text-align:center;animation:popIn .2s ease;
+    ">
+      <div style="
+        width:64px;height:64px;border-radius:50%;
+        background:#f0fdf4;margin:0 auto 16px;
+        display:flex;align-items:center;justify-content:center;
+        font-size:32px;
+      ">✅</div>
+      <div style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:6px;">Dữ liệu đã khôi phục ✓</div>
+      <div style="font-size:14px;color:#64748b;line-height:1.6;margin-bottom:24px;">
+        <b style="color:#0f172a;">${arg1}</b> giao dịch và
+        <b style="color:#0f172a;">${arg2}</b> mục tiêu<br>đã sẵn sàng.
+      </div>
+      <button onclick="this.closest('[style]').remove()" style="
+        width:100%;padding:15px;
+        background:#2563eb;color:#fff;
+        border:none;border-radius:12px;
+        font-size:15px;font-weight:700;
+        cursor:pointer;font-family:inherit;
+      ">Xem Dashboard →</button>
     </div>
-    <div style="display:flex;gap:8px;">
-      <button id="_imp_cancel" style="flex:1;padding:12px;background:#f1f5f9;color:#4a5568;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Hủy</button>
-      <button id="_imp_ok"    style="flex:1;padding:12px;background:#dc2626;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Tiếp tục nhập</button>
+  ` : `
+    <div style="
+      background:#fff;border-radius:20px;
+      padding:32px 24px;max-width:340px;width:100%;
+      text-align:center;animation:popIn .2s ease;
+    ">
+      <div style="
+        width:64px;height:64px;border-radius:50%;
+        background:#fef2f2;margin:0 auto 16px;
+        display:flex;align-items:center;justify-content:center;
+        font-size:32px;
+      ">⚠️</div>
+      <div style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:6px;">${arg1}</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:24px;">${arg2}</div>
+      <button onclick="this.closest('[style]').remove()" style="
+        width:100%;padding:15px;
+        background:#f1f5f9;color:#334155;
+        border:none;border-radius:12px;
+        font-size:15px;font-weight:600;
+        cursor:pointer;font-family:inherit;
+      ">Thử lại</button>
     </div>
-  </div>`;
-  document.body.appendChild(ov);
-  document.getElementById('_imp_cancel').onclick = () => ov.remove();
-  document.getElementById('_imp_ok').onclick     = () => { ov.remove(); onConfirm(); };
-  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
-}
+  `;
 
-function _showImportSuccess(txCount, goalCount) {
-  const ov = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
-  ov.innerHTML = `<div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:360px;width:100%;text-align:center;">
-    <div style="font-size:40px;margin-bottom:12px;">✅</div>
-    <div style="font-size:17px;font-weight:700;margin-bottom:8px;color:#059669;">Nhập dữ liệu thành công!</div>
-    <div style="font-size:13px;color:#718096;line-height:1.7;margin-bottom:20px;"><b style="color:#1a202c;">${txCount}</b> giao dịch<br><b style="color:#1a202c;">${goalCount}</b> mục tiêu tài chính<br>đã được khôi phục.</div>
-    <button onclick="this.closest('[style]').remove()" style="width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Xem Dashboard</button>
-  </div>`;
-  document.body.appendChild(ov);
-  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
-}
-
-function _showImportError(msg) {
-  const ov = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
-  ov.innerHTML = `<div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:360px;width:100%;text-align:center;">
-    <div style="font-size:40px;margin-bottom:12px;">❌</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#dc2626;">File không hợp lệ</div>
-    <div style="font-size:13px;color:#718096;line-height:1.7;margin-bottom:20px;">File JSON không đúng định dạng.<br>Vui lòng dùng file được xuất từ Định Cơ.<br><br><span style="font-size:11px;opacity:.6;">${msg}</span></div>
-    <button onclick="this.closest('[style]').remove()" style="width:100%;padding:13px;background:#1a202c;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Đóng</button>
-  </div>`;
   document.body.appendChild(ov);
   ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
 }
@@ -2321,5 +2580,53 @@ initA2hs();
 
 <!-- FAB -->
 <button class="fab" onclick="openModal()" aria-label="Thêm giao dịch">+</button>
+
+<!-- ONBOARDING SHEET -->
+<div class="onboard-overlay" id="onboard-overlay">
+  <div class="onboard-sheet">
+    <div class="onboard-handle"></div>
+
+    <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:6px;">
+      Bắt đầu thế nào? 👋
+    </div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:24px;">
+      Chỉ 3 bước. Không cần đọc hướng dẫn.
+    </div>
+
+    <div class="onboard-step">
+      <div class="onboard-step-num">1</div>
+      <div class="onboard-step-body">
+        <div class="onboard-step-icon">💰</div>
+        <div class="onboard-step-title">Nhập thu nhập</div>
+        <div class="onboard-step-desc">Lương, thưởng, hay bất kỳ khoản tiền vào nào.</div>
+      </div>
+    </div>
+    <div class="onboard-divider"></div>
+
+    <div class="onboard-step">
+      <div class="onboard-step-num">2</div>
+      <div class="onboard-step-body">
+        <div class="onboard-step-icon">🛒</div>
+        <div class="onboard-step-title">Nhập chi tiêu</div>
+        <div class="onboard-step-desc">Ăn uống, đi lại, nhà ở... ghi lại khi phát sinh.</div>
+      </div>
+    </div>
+    <div class="onboard-divider"></div>
+
+    <div class="onboard-step">
+      <div class="onboard-step-num">3</div>
+      <div class="onboard-step-body">
+        <div class="onboard-step-icon">🛡️</div>
+        <div class="onboard-step-title">Xem Tấm Khiên của bạn</div>
+        <div class="onboard-step-desc">Dashboard tự tính tỷ lệ tiết kiệm và đưa ra gợi ý.</div>
+      </div>
+    </div>
+
+    <button class="onboard-cta" onclick="closeOnboarding()">
+      Tôi đã hiểu — Bắt đầu ngay
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
