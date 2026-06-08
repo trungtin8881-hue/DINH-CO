@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ĐỊNH CƠ — AI Finance Coach</title>
-<!-- v29: Onboarding 3-step + Import UX rebuilt + Mobile touch targets -->
+<!-- v30: iOS Export fixed — blob download + step-by-step guide + Import location clarified -->
 
 <!-- ── v22: Brand meta ── -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1723,61 +1723,178 @@ function exportData() {
     const filename = `dinh-co-backup-${new Date().toISOString().slice(0,10)}.json`;
     const ua       = navigator.userAgent || '';
     const isIOS    = /iP(hone|ad|od)/i.test(ua);
-    const supportsDownload = !isIOS && 'download' in document.createElement('a');
-    if (supportsDownload) {
-      const blob = new Blob([json], {type:'application/json'});
+    const isAndroid = /Android/i.test(ua);
+
+    if (!isIOS) {
+      // Android + Desktop: direct download — works perfectly
+      const blob = new Blob([json], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       a.href = url; a.download = filename;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      showToast('✅ Đã xuất dữ liệu');
-    } else {
-      const blob   = new Blob([json], {type:'application/json'});
-      const url    = URL.createObjectURL(blob);
-      const opened = window.open(url, '_blank');
-      if (opened) _showExportGuide(filename);
-      else        _showExportCopy(json, filename);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      showToast('✅ File đã tải về — xem trong Downloads');
+      return;
     }
-  } catch(e) { showToast('❌ Xuất dữ liệu thất bại'); console.error(e); }
+
+    // iOS Safari: <a download> không hoạt động
+    // Giải pháp: tạo link download + hướng dẫn trực quan từng bước
+    _showIOSExport(json, filename);
+
+  } catch(e) {
+    showToast('❌ Xuất dữ liệu thất bại');
+    console.error('[exportData]', e);
+  }
 }
 
-function _showExportGuide(filename) {
+function _showIOSExport(json, filename) {
+  // Tạo blob URL để dùng trong <a>
+  const blob    = new Blob([json], { type: 'application/octet-stream' });
+  const blobUrl = URL.createObjectURL(blob);
+
   const ov = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:flex-end;justify-content:center;';
-  ov.innerHTML = `<div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 24px calc(24px + env(safe-area-inset-bottom));">
-    <div style="width:36px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 16px;"></div>
-    <div style="font-size:15px;font-weight:700;margin-bottom:8px;">💾 Lưu file dữ liệu</div>
-    <div style="font-size:13px;color:#718096;line-height:1.8;margin-bottom:16px;">
-      File JSON đã mở trong tab mới.<br>
-      <b>1.</b> Nhấn nút <b>Share ↑</b> ở Safari<br>
-      <b>2.</b> Chọn <b>"Save to Files"</b><br>
-      <b>3.</b> Chọn thư mục → <b>Save</b>
+  ov.id    = '_export_modal';
+  ov.style.cssText = [
+    'position:fixed;inset:0;z-index:700',
+    'background:rgba(15,23,42,.7)',
+    'display:flex;align-items:flex-end;justify-content:center',
+    'animation:fadeIn .18s ease',
+  ].join(';');
+
+  ov.innerHTML = `
+    <div style="
+      background:#fff; border-radius:24px 24px 0 0;
+      width:100%; max-width:480px;
+      padding:12px 24px calc(36px + env(safe-area-inset-bottom));
+      animation:slideUp .22s ease;
+    ">
+      <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 20px;"></div>
+
+      <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:4px;">
+        Lưu dữ liệu 💾
+      </div>
+      <div style="font-size:13px;color:#64748b;margin-bottom:20px;">
+        File backup sẽ được lưu vào ứng dụng <b>Files</b> trên iPhone.
+      </div>
+
+      <!-- Tên file -->
+      <div style="
+        background:#f8fafc;border-radius:10px;
+        padding:10px 14px;margin-bottom:20px;
+        display:flex;align-items:center;gap:10px;
+      ">
+        <span style="font-size:20px;">📄</span>
+        <div>
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:2px;">Tên file</div>
+          <div style="font-size:13px;font-weight:600;color:#0f172a;font-family:monospace;">${filename}</div>
+        </div>
+      </div>
+
+      <!-- Bước 1: Bấm Lưu file -->
+      <div style="
+        background:#eff6ff;border-radius:12px;
+        padding:14px 16px;margin-bottom:12px;
+      ">
+        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:6px;">
+          Bước 1 — Bấm nút bên dưới
+        </div>
+        <div style="font-size:12px;color:#3b82f6;">
+          Safari sẽ hỏi bạn muốn lưu vào đâu.
+        </div>
+      </div>
+
+      <!-- Bước 2: Hướng dẫn sau khi bấm -->
+      <div style="
+        background:#f0fdf4;border-radius:12px;
+        padding:14px 16px;margin-bottom:20px;
+      ">
+        <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px;">
+          Bước 2 — Chọn nơi lưu
+        </div>
+        <div style="font-size:12px;color:#16a34a;line-height:1.8;">
+          📱 Chọn <b>On My iPhone</b> hoặc <b>iCloud Drive</b><br>
+          📁 Chọn thư mục (ví dụ: <b>Downloads</b>)<br>
+          ✅ Bấm <b>Save</b> góc trên phải
+        </div>
+      </div>
+
+      <!-- CTA — dùng <a> với blob, type octet-stream để iOS nhận download -->
+      <a id="_ios_dl_link" href="${blobUrl}" download="${filename}" style="
+        display:flex;align-items:center;justify-content:center;gap:8px;
+        width:100%;padding:16px;
+        background:#2563eb;color:#fff;
+        border:none;border-radius:14px;
+        font-size:16px;font-weight:700;
+        text-decoration:none;
+        cursor:pointer;
+        box-sizing:border-box;
+      ">
+        💾&nbsp; Lưu file backup
+      </a>
+
+      <!-- Fallback: nếu iOS không tải được → copy JSON -->
+      <button id="_ios_copy_btn" onclick="_showExportCopyFallback('${filename.replace(/'/g,"\'")}', document.getElementById('_ios_dl_link').href)" style="
+        width:100%;padding:12px;margin-top:8px;
+        background:#f1f5f9;color:#475569;
+        border:none;border-radius:12px;
+        font-size:14px;font-weight:500;
+        cursor:pointer;font-family:inherit;
+      ">Không lưu được? → Sao chép JSON</button>
+
+      <button onclick="document.getElementById('_export_modal')?.remove()" style="
+        width:100%;padding:12px;margin-top:4px;
+        background:none;border:none;
+        font-size:14px;color:#94a3b8;
+        cursor:pointer;font-family:inherit;
+      ">Hủy</button>
     </div>
-    <div style="font-size:11px;color:#a0aec0;margin-bottom:16px;">${filename}</div>
-    <button onclick="this.closest('[style]').remove()" style="width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">OK, tôi hiểu rồi</button>
-  </div>`;
+  `;
+
   document.body.appendChild(ov);
   ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
+
+  // Khi bấm link download → đóng modal sau 1.5s (cho UX mượt)
+  document.getElementById('_ios_dl_link').addEventListener('click', () => {
+    setTimeout(() => {
+      document.getElementById('_export_modal')?.remove();
+      showToast('✅ File đã lưu — mở Files app để xem');
+      // Revoke sau khi dùng
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
+    }, 1500);
+  });
 }
 
-function _showExportCopy(json, filename) {
-  const ov  = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:flex-end;justify-content:center;';
-  const safe = json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  ov.innerHTML = `<div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 24px calc(24px + env(safe-area-inset-bottom));">
-    <div style="width:36px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 16px;"></div>
-    <div style="font-size:15px;font-weight:700;margin-bottom:6px;">💾 Sao chép dữ liệu</div>
-    <div style="font-size:13px;color:#718096;margin-bottom:10px;">Trình duyệt này không hỗ trợ tải file. Copy JSON và lưu vào Notes:</div>
-    <textarea readonly id="_exp_ta" style="width:100%;height:120px;font-size:11px;font-family:monospace;padding:8px;border:1px solid #e2e8f0;border-radius:8px;resize:none;">${safe}</textarea>
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button onclick="navigator.clipboard?.writeText(document.getElementById('_exp_ta').value).then(()=>{this.textContent='✅ Đã copy!'}).catch(()=>{document.getElementById('_exp_ta').select();document.execCommand('copy');this.textContent='✅ Đã copy!'})" style="flex:1;padding:11px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">📋 Copy JSON</button>
-      <button onclick="this.closest('[style]').remove()" style="padding:11px 14px;background:#f1f5f9;color:#4a5568;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;">Đóng</button>
-    </div>
-  </div>`;
-  document.body.appendChild(ov);
-  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
-  setTimeout(() => document.getElementById('_exp_ta')?.select(), 300);
+function _showExportCopyFallback(filename, blobUrl) {
+  // Fetch blob content để copy
+  fetch(blobUrl)
+    .then(r => r.text())
+    .then(json => {
+      document.getElementById('_export_modal')?.remove();
+      const safe = json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const ov = document.createElement('div');
+      ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:flex;align-items:flex-end;justify-content:center;';
+      ov.innerHTML = `
+        <div style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 24px calc(32px + env(safe-area-inset-bottom));">
+          <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 16px;"></div>
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Sao chép dữ liệu</div>
+          <div style="font-size:13px;color:#64748b;margin-bottom:12px;">
+            Copy đoạn JSON bên dưới → dán vào <b>Notes</b> hoặc <b>Files</b> để lưu.
+          </div>
+          <textarea readonly id="_cp_ta" style="width:100%;height:140px;font-size:11px;font-family:monospace;padding:10px;border:1px solid #e2e8f0;border-radius:10px;resize:none;background:#f8fafc;">${safe}</textarea>
+          <button onclick="
+            navigator.clipboard?.writeText(document.getElementById('_cp_ta').value)
+              .then(()=>{this.textContent='✅ Đã copy!'})
+              .catch(()=>{document.getElementById('_cp_ta').select();document.execCommand('copy');this.textContent='✅ Đã copy!'})
+          " style="width:100%;padding:14px;margin-top:10px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">
+            📋 Copy JSON
+          </button>
+          <button onclick="this.closest('[style]').remove()" style="width:100%;padding:12px;margin-top:6px;background:none;border:none;font-size:14px;color:#94a3b8;cursor:pointer;font-family:inherit;">Đóng</button>
+        </div>`;
+      document.body.appendChild(ov);
+      ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
+      setTimeout(() => document.getElementById('_cp_ta')?.select(), 300);
+    })
+    .catch(() => showToast('❌ Không thể đọc dữ liệu'));
 }
 
 // ── IMPORT FLOW — Định Cơ Product Principle: "Chỉ cần chạm" ──────────────
@@ -1847,11 +1964,11 @@ function _showImportGuide() {
         ">2</div>
         <div>
           <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
-            Nếu vừa tải về → mở <b>Downloads</b>
+            File backup nằm ở <b>Files app</b>
           </div>
           <div style="font-size:12px;color:#64748b;margin-top:2px;">
-            iPhone: Ứng dụng <b>Files</b> → Recents<br>
-            Android: Ứng dụng <b>Files</b> → Downloads
+            📱 iPhone: Mở <b>Files</b> → <b>Recents</b> (vừa lưu)<br>
+            🤖 Android: Mở <b>Files</b> → <b>Downloads</b>
           </div>
         </div>
       </div>
