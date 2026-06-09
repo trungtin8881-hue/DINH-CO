@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ĐỊNH CƠ — AI Finance Coach</title>
-<!-- v30: iOS Export fixed — blob download + step-by-step guide + Import location clarified -->
+<!-- v32: Hướng dẫn sử dụng modal — first-time auto-show, sidebar + More sheet entry points -->
 
 <!-- ── v22: Brand meta ── -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -795,6 +795,89 @@ textarea { resize: vertical; min-height: 60px; }
   /* Prevent iOS auto-zoom on input focus (font-size must be >= 16px) */
 }
 
+
+/* ── HƯỚNG DẪN SỬ DỤNG ─────────────────────────────────── */
+.guide-overlay {
+  display: none; position: fixed; inset: 0; z-index: 1200;
+  background: rgba(15,23,42,.75);
+  align-items: flex-end; justify-content: center;
+  animation: fadeIn .2s ease;
+}
+.guide-overlay.open { display: flex; }
+.guide-sheet {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 0 0 calc(24px + env(safe-area-inset-bottom));
+  animation: slideUp .25s ease;
+}
+.guide-header {
+  text-align: center;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  position: sticky; top: 0; background: #fff; z-index: 1;
+}
+.guide-handle {
+  width: 40px; height: 4px; background: #e2e8f0;
+  border-radius: 2px; margin: 0 auto 16px;
+}
+.guide-logo { font-size: 36px; margin-bottom: 6px; }
+.guide-title {
+  font-size: 20px; font-weight: 800; color: #0f172a;
+  margin-bottom: 3px;
+}
+.guide-subtitle { font-size: 13px; color: #64748b; }
+.guide-body { padding: 20px 20px 0; }
+.guide-section {
+  margin-bottom: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #f1f5f9;
+}
+.guide-section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  font-size: 14px; font-weight: 700; color: #0f172a;
+}
+.guide-section-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.guide-section-body {
+  padding: 10px 16px 14px;
+  background: #fff;
+}
+.guide-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 0;
+  font-size: 13px; color: #334155;
+  border-bottom: 1px solid #f8fafc;
+}
+.guide-item:last-child { border-bottom: none; }
+.guide-item-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #cbd5e1; flex-shrink: 0;
+}
+.guide-tip {
+  background: #eff6ff; border-radius: 10px;
+  padding: 10px 14px; margin: 0 20px 16px;
+  font-size: 13px; color: #1e40af; line-height: 1.6;
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.guide-footer {
+  padding: 16px 20px 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.guide-by {
+  text-align: center;
+  font-size: 11px; color: #94a3b8;
+  padding: 12px 0 0;
+}
+
 </style>
 </head>
 <body>
@@ -913,6 +996,10 @@ textarea { resize: vertical; min-height: 60px; }
         Nhập
       </button>
     </div>
+    <button class="btn-sidebar" onclick="openGuide()" style="width:100%;margin-bottom:6px;">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Hướng dẫn sử dụng
+    </button>
     <button class="btn-reset-sidebar" onclick="resetAllData()">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
       Xóa toàn bộ dữ liệu
@@ -1341,13 +1428,17 @@ textarea { resize: vertical; min-height: 60px; }
   <div class="action-sheet" id="more-sheet">
     <div class="action-sheet-handle"></div>
     <div class="action-sheet-title">Cài đặt & Dữ liệu</div>
+    <button class="action-sheet-item" onclick="closeMoreSheet();openGuide();">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Hướng dẫn sử dụng
+    </button>
     <button class="action-sheet-item" onclick="exportData()">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-      Export Data
+      Sao lưu dữ liệu
     </button>
     <button class="action-sheet-item" onclick="importData()">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"/></svg>
-      Import Data
+      Khôi phục dữ liệu
     </button>
     <div class="action-sheet-divider"></div>
     <button class="action-sheet-item danger" onclick="resetFromSheet()">
@@ -1505,6 +1596,35 @@ function closeOnboarding() {
   document.getElementById('onboard-overlay').classList.remove('open');
   // Open "Thêm giao dịch" modal immediately — first action is clear
   setTimeout(() => openModal(), 200);
+}
+
+
+// ── HƯỚNG DẪN SỬ DỤNG ───────────────────────────────────────────────
+function openGuide() {
+  const el = document.getElementById('guide-overlay');
+  if (el) {
+    el.classList.add('open');
+    // Scroll to top mỗi lần mở
+    const sheet = document.getElementById('guide-sheet');
+    if (sheet) sheet.scrollTop = 0;
+  }
+}
+
+function closeGuide(startUsing) {
+  document.getElementById('guide-overlay')?.classList.remove('open');
+  localStorage.setItem('dc_guide_seen', '1');
+  // Nếu bấm "Bắt đầu sử dụng" → mở modal thêm giao dịch ngay
+  if (startUsing && typeof openModal === 'function') {
+    setTimeout(() => openModal(), 200);
+  }
+}
+
+function initGuide() {
+  // Chỉ hiện lần đầu khi chưa xem
+  if (!localStorage.getItem('dc_guide_seen')) {
+    // Delay nhỏ để app render xong trước
+    setTimeout(() => openGuide(), 600);
+  }
 }
 
 function initWelcome() {
@@ -1716,16 +1836,38 @@ function confirmDeleteTx() {
 // ═══════════════════════════════════
 // EXPORT / IMPORT (preserved exactly)
 // ═══════════════════════════════════
+// ── Platform detection (cho export/import UX) ─────────────────────────────
+const _PLATFORM = (function(){
+  const ua         = navigator.userAgent || '';
+  const isIOS      = /iP(hone|ad|od)/i.test(ua);
+  const isAndroid  = /Android/i.test(ua);
+  const isMessenger= /(FBAN|FBAV|Messenger)/i.test(ua);
+  const isZalo     = /Zalo/i.test(ua);
+  const isWebView  = isMessenger || isZalo
+    || /(Instagram|TikTok|MicroMessenger)/i.test(ua)
+    || (isIOS && /WebKit/i.test(ua) && !/Safari/i.test(ua));
+  return { isIOS, isAndroid, isMessenger, isZalo, isWebView };
+})();
+
 function exportData() {
   closeMoreSheet();
   try {
     const json     = JSON.stringify(db, null, 2);
-    const filename = `DINHCO_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
-    const ua       = navigator.userAgent || '';
-    const isIOS    = /iP(hone|ad|od)/i.test(ua);
-    const isAndroid = /Android/i.test(ua);
+    const today    = new Date().toISOString().slice(0,10);
+    const filename = `dinh-co-backup-${today}.json`;
+    const byteSize = new Blob([json]).size;
 
-    if (!isIOS) {
+    // ── Debug log (giúp test trên iPhone/Messenger) ───────────────────
+    console.log('[ĐỊNH CƠ Export]', {
+      file:    filename,
+      size:    `${(byteSize/1024).toFixed(1)} KB`,
+      records: db.transactions?.length ?? 0,
+      goals:   db.goals?.length ?? 0,
+      time:    new Date().toLocaleString('vi-VN'),
+    });
+
+    if (!_PLATFORM.isIOS) {
+      // Android + Desktop: direct <a download> — works natively
       // Android + Desktop: direct download — works perfectly
       const blob = new Blob([json], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
@@ -1733,7 +1875,7 @@ function exportData() {
       a.href = url; a.download = filename;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1500);
-      showToast(`✅ Backup hoàn tất\nFile: ${filename}`);
+      setTimeout(() => _showExportSuccess(filename), 400);
       return;
     }
 
@@ -1748,9 +1890,10 @@ function exportData() {
 }
 
 function _showIOSExport(json, filename) {
-  // Tạo blob URL để dùng trong <a>
   const blob    = new Blob([json], { type: 'application/octet-stream' });
   const blobUrl = URL.createObjectURL(blob);
+  const byteSize = blob.size;
+  const isWV     = _PLATFORM.isWebView;
 
   const ov = document.createElement('div');
   ov.id    = '_export_modal';
@@ -1787,8 +1930,20 @@ function _showIOSExport(json, filename) {
         <div>
           <div style="font-size:11px;color:#94a3b8;margin-bottom:2px;">Tên file</div>
           <div style="font-size:13px;font-weight:600;color:#0f172a;font-family:monospace;">${filename}</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${(byteSize/1024).toFixed(1)} KB · ${db.transactions?.length ?? 0} giao dịch</div>
         </div>
       </div>
+
+      <!-- Messenger/WebView cảnh báo nhẹ -->
+      ${isWV ? `<div style="
+        background:#fff7ed;border-left:3px solid #f97316;border-radius:8px;
+        padding:10px 12px;margin-bottom:12px;
+        font-size:12px;color:#9a3412;line-height:1.6;
+      ">
+        ⚠️ Bạn đang dùng qua Messenger/Zalo.<br>
+        File có thể lưu ở vị trí khác.<br>
+        Nếu không tìm được → mở link trong <b>Safari</b>.
+      </div>` : ''}
 
       <!-- Bước 1: Bấm Lưu file -->
       <div style="
@@ -1857,7 +2012,7 @@ function _showIOSExport(json, filename) {
   document.getElementById('_ios_dl_link').addEventListener('click', () => {
     setTimeout(() => {
       document.getElementById('_export_modal')?.remove();
-      showToast('✅ File đã lưu — mở Files app để xem');
+      _showExportSuccess(filename);
       // Revoke sau khi dùng
       setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
     }, 1500);
@@ -1897,6 +2052,50 @@ function _showExportCopyFallback(filename, blobUrl) {
     .catch(() => showToast('❌ Không thể đọc dữ liệu'));
 }
 
+
+function _showExportSuccess(filename) {
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:800;background:rgba(15,23,42,.65);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .18s ease;';
+  ov.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;">
+      <div style="font-size:48px;margin-bottom:12px;">✅</div>
+      <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:6px;">Backup thành công!</div>
+
+      <!-- Tên file -->
+      <div style="background:#f0fdf4;border-radius:10px;padding:10px 14px;margin:12px 0;text-align:left;">
+        <div style="font-size:11px;color:#16a34a;font-weight:600;margin-bottom:3px;">TÊN FILE</div>
+        <div style="font-size:12px;color:#0f172a;font-family:monospace;word-break:break-all;">${filename}</div>
+      </div>
+
+      <!-- Tìm file ở đâu -->
+      <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px;text-align:left;">
+        <div style="font-size:11px;color:#64748b;font-weight:600;margin-bottom:6px;">TÌM FILE Ở ĐÂU?</div>
+        <div style="font-size:13px;color:#334155;line-height:1.8;">
+          📱 <b>iPhone:</b> Mở <b>Files</b> → <b>Recents</b><br>
+          🤖 <b>Android:</b> Mở <b>Files</b> → <b>Downloads</b><br>
+          💻 <b>Máy tính:</b> Thư mục <b>Downloads</b>
+        </div>
+      </div>
+
+      <!-- Gợi ý lưu cloud -->
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:20px;line-height:1.6;">
+        💡 Để an toàn hơn, hãy copy file vào<br>
+        <b>iCloud Drive</b> hoặc <b>Google Drive</b>
+      </div>
+
+      <button onclick="this.closest('[style]').remove()" style="
+        width:100%;padding:14px;
+        background:#2563eb;color:#fff;
+        border:none;border-radius:12px;
+        font-size:15px;font-weight:700;
+        cursor:pointer;font-family:inherit;
+      ">OK, tôi đã lưu rồi</button>
+    </div>
+  `;
+  document.body.appendChild(ov);
+  ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
+}
+
 // ── IMPORT FLOW — Định Cơ Product Principle: "Chỉ cần chạm" ──────────────
 // Flow: Tap → Hướng dẫn 3 dòng → Chọn file → Xong.
 // Không có confirm đỏ. Không có kỹ thuật. Không có suy nghĩ.
@@ -1927,79 +2126,62 @@ function _showImportGuide() {
     ">
       <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 20px;"></div>
 
-      <!-- Header -->
+      <!-- Header — ngôn ngữ đời thường -->
       <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:4px;">
         Khôi phục dữ liệu 📂
       </div>
-      <div style="font-size:13px;color:#64748b;margin-bottom:20px;">
-        Chọn file backup bạn đã tạo từ ĐỊNH CƠ.
+      <div style="font-size:13px;color:#64748b;margin-bottom:16px;">
+        Bạn đã từng bấm <b>"Backup dữ liệu"</b> chưa?<br>
+        Nếu có — làm theo 3 bước dưới đây.
       </div>
 
-      <!-- Step 1 -->
-      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">
-        <div style="
-          width:28px;height:28px;border-radius:50%;
-          background:#eff6ff;color:#2563eb;
-          font-size:13px;font-weight:700;
-          display:flex;align-items:center;justify-content:center;flex-shrink:0;
-        ">1</div>
-        <div>
-          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
-            Tìm file backup ĐỊNH CƠ
-          </div>
-          <div style="font-size:12px;color:#94a3b8;font-family:monospace;
-            background:#f8fafc;padding:4px 8px;border-radius:6px;margin-top:4px;display:inline-block;">
-            dinh-co-backup-2026-06-08.json
-          </div>
+      <!-- Step 1 — Tìm file ở đâu -->
+      <div style="background:#f8fafc;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a;">Tìm file backup</div>
+        </div>
+        <div style="font-size:13px;color:#334155;line-height:1.9;padding-left:36px;">
+          📱 <b>iPhone:</b> Mở app <b>Files</b> → bấm <b>Recents</b><br>
+          🤖 <b>Android:</b> Mở app <b>Files</b> → bấm <b>Downloads</b>
+        </div>
+        <div style="margin-top:8px;padding-left:36px;">
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;">File có tên dạng:</div>
+          <div style="font-size:12px;font-family:monospace;background:#eff6ff;color:#1e40af;padding:4px 10px;border-radius:6px;display:inline-block;">dinh-co-backup-2026-06-08.json</div>
         </div>
       </div>
 
-      <!-- Step 2 -->
-      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;">
-        <div style="
-          width:28px;height:28px;border-radius:50%;
-          background:#eff6ff;color:#2563eb;
-          font-size:13px;font-weight:700;
-          display:flex;align-items:center;justify-content:center;flex-shrink:0;
-        ">2</div>
-        <div>
-          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
-            File backup nằm ở <b>Files app</b>
-          </div>
-          <div style="font-size:12px;color:#64748b;margin-top:2px;">
-            📱 iPhone: Mở <b>Files</b> → <b>Recents</b> (vừa lưu)<br>
-            🤖 Android: Mở <b>Files</b> → <b>Downloads</b>
-          </div>
+      <!-- Step 2 — Mở ĐỊNH CƠ -->
+      <div style="background:#f8fafc;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a;">Quay lại ĐỊNH CƠ</div>
+        </div>
+        <div style="font-size:13px;color:#64748b;padding-left:36px;">
+          Bấm nút <b>"Chọn file"</b> bên dưới → chọn đúng file vừa tìm.
         </div>
       </div>
 
-      <!-- Step 3 -->
-      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;">
-        <div style="
-          width:28px;height:28px;border-radius:50%;
-          background:#eff6ff;color:#2563eb;
-          font-size:13px;font-weight:700;
-          display:flex;align-items:center;justify-content:center;flex-shrink:0;
-        ">3</div>
-        <div>
-          <div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:2px;">
-            Bấm "Chọn file" để khôi phục
-          </div>
-          <div style="font-size:12px;color:#64748b;margin-top:2px;">
-            Dữ liệu sẽ tự động được khôi phục.
-          </div>
+      <!-- Step 3 — Tự động xong -->
+      <div style="background:#f0fdf4;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#dcfce7;color:#16a34a;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a;">Xong! Dữ liệu tự khôi phục</div>
+        </div>
+        <div style="font-size:13px;color:#16a34a;padding-left:36px;">
+          Không cần làm thêm gì — app tự tính lại tất cả.
         </div>
       </div>
 
-      <!-- Note — không dọa, không kỹ thuật -->
+      <!-- Note nhẹ -->
       <div style="
         background:#fefce8;border-radius:10px;
-        padding:10px 12px;margin-bottom:20px;
+        padding:10px 12px;margin-bottom:16px;
         display:flex;gap:8px;align-items:flex-start;
       ">
         <span style="font-size:14px;flex-shrink:0;">💡</span>
         <span style="font-size:12px;color:#92400e;line-height:1.5;">
-          Dữ liệu hiện tại sẽ được thay bằng dữ liệu trong file backup.
+          Dữ liệu cũ sẽ được thay bằng dữ liệu trong file backup.
         </span>
       </div>
 
@@ -2046,7 +2228,7 @@ function _runFilePicker(modal) {
 
     if (file.size > 5 * 1024 * 1024) {
       modal?.remove();
-      _showImportResult('error', 'File quá lớn', 'File backup không được vượt quá 5MB.');
+      _showImportResult('error', 'File quá lớn 📁', 'File này quá lớn. Hãy chọn đúng file backup của ĐỊNH CƠ (thường nhỏ hơn 1MB).');
       return;
     }
 
@@ -2057,9 +2239,9 @@ function _runFilePicker(modal) {
 
         // Validate
         if (typeof parsed !== 'object' || parsed === null)
-          throw new Error('Không đúng định dạng');
+          throw new Error('wrong_format');
         if (!Array.isArray(parsed.transactions))
-          throw new Error('File không phải backup của Định Cơ');
+          throw new Error('not_dinh_co');
 
         // Sanitize transactions
         const txs = parsed.transactions.map(t => ({
@@ -2104,7 +2286,14 @@ function _runFilePicker(modal) {
       } catch(err) {
         console.error('[import]', err);
         modal?.remove();
-        _showImportResult('error', 'File không đúng', 'Vui lòng chọn file backup được tạo từ ĐỊNH CƠ.');
+        const _em = err.message || '';
+        if (_em === 'wrong_format') {
+          _showImportResult('error', 'File không đọc được ⚠️', 'File này không phải file backup hợp lệ. Hãy thử chọn file khác.');
+        } else if (_em === 'not_dinh_co') {
+          _showImportResult('error', 'Đây không phải file của ĐỊNH CƠ', 'Hãy chọn file có tên dạng: dinh-co-backup-xxxx.json');
+        } else {
+          _showImportResult('error', 'File bị lỗi hoặc không đầy đủ', 'File backup có thể bị hỏng. Hãy thử backup lại từ đầu.');
+        }
       }
     };
 
@@ -2690,6 +2879,7 @@ function resetAllData() {
 renderDashboard();
 renderGoals();
 initWelcome();
+initGuide();
 initA2hs();
 </script>
 
@@ -2742,6 +2932,128 @@ initA2hs();
     <button class="onboard-cta" onclick="closeOnboarding()">
       Tôi đã hiểu — Bắt đầu ngay
     </button>
+  </div>
+</div>
+
+
+<!-- ══ HƯỚNG DẪN SỬ DỤNG ══ -->
+<div class="guide-overlay" id="guide-overlay">
+  <div class="guide-sheet" id="guide-sheet">
+    <div class="guide-header">
+      <div class="guide-handle"></div>
+      <div class="guide-logo">📊</div>
+      <div class="guide-title">ĐỊNH CƠ</div>
+      <div class="guide-subtitle">AI Finance Coach · Giúp bạn quản lý tiền bạc đơn giản mỗi ngày</div>
+    </div>
+
+    <div class="guide-body">
+
+      <!-- Ghi thu nhập -->
+      <div class="guide-section">
+        <div class="guide-section-header">
+          <div class="guide-section-icon" style="background:#dcfce7;">💰</div>
+          <span>Bước 1 — Ghi Thu nhập</span>
+        </div>
+        <div class="guide-section-body">
+          <div class="guide-item"><div class="guide-item-dot"></div>Lương hàng tháng</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Tiền thưởng</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Thu nhập từ việc buôn bán</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Các khoản tiền khác nhận được</div>
+        </div>
+      </div>
+
+      <!-- Ghi chi tiêu -->
+      <div class="guide-section">
+        <div class="guide-section-header">
+          <div class="guide-section-icon" style="background:#fee2e2;">🛒</div>
+          <span>Bước 2 — Ghi Chi tiêu</span>
+        </div>
+        <div class="guide-section-body">
+          <div class="guide-item"><div class="guide-item-dot"></div>Tiền ăn uống hàng ngày</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Mua sắm đồ dùng</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Xăng xe, đi lại</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Tiền điện, nước, internet</div>
+        </div>
+      </div>
+
+      <!-- Xem dashboard -->
+      <div class="guide-section">
+        <div class="guide-section-header">
+          <div class="guide-section-icon" style="background:#dbeafe;">📈</div>
+          <span>Bước 3 — Xem tình hình tài chính</span>
+        </div>
+        <div class="guide-section-body">
+          <div class="guide-item"><div class="guide-item-dot"></div>Tiền vào tháng này là bao nhiêu</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Tiền ra tháng này là bao nhiêu</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Còn dư lại bao nhiêu để tiết kiệm</div>
+        </div>
+      </div>
+
+      <!-- Đặt mục tiêu -->
+      <div class="guide-section">
+        <div class="guide-section-header">
+          <div class="guide-section-icon" style="background:#fef3c7;">🎯</div>
+          <span>Thêm — Đặt mục tiêu tài chính</span>
+        </div>
+        <div class="guide-section-body">
+          <div class="guide-item"><div class="guide-item-dot"></div>Quỹ dự phòng khi có việc bất ngờ</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Dành tiền đi du lịch</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Mua xe, mua nhà</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Bất kỳ mục tiêu nào bạn muốn</div>
+        </div>
+      </div>
+
+      <!-- Sao lưu -->
+      <div class="guide-section">
+        <div class="guide-section-header">
+          <div class="guide-section-icon" style="background:#ede9fe;">💾</div>
+          <span>Sao lưu dữ liệu</span>
+        </div>
+        <div class="guide-section-body">
+          <div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:8px;">
+            Vào menu <b>More</b> (dưới màn hình) → bấm <b>Sao lưu dữ liệu</b>
+          </div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Lưu vào Tệp trên điện thoại</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Gửi file qua Zalo cho chính mình</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Gửi vào nhóm Zalo cá nhân để giữ</div>
+        </div>
+      </div>
+
+      <!-- Khôi phục -->
+      <div class="guide-section">
+        <div class="guide-section-header">
+          <div class="guide-section-icon" style="background:#dcfce7;">🔄</div>
+          <span>Khôi phục dữ liệu</span>
+        </div>
+        <div class="guide-section-body">
+          <div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:8px;">
+            Vào menu <b>More</b> → bấm <b>Khôi phục dữ liệu</b>
+          </div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Chọn file backup đã lưu trước đó</div>
+          <div class="guide-item"><div class="guide-item-dot"></div>Dữ liệu tự động được khôi phục</div>
+        </div>
+      </div>
+
+    </div><!-- /.guide-body -->
+
+    <div class="guide-tip">
+      <span>⏱️</span>
+      <span>Mỗi ngày chỉ cần <b>1 phút</b> ghi chép là đủ để nắm rõ tài chính của mình.</span>
+    </div>
+
+    <div class="guide-footer">
+      <button
+        onclick="closeGuide(true)"
+        style="width:100%;padding:16px;background:#2563eb;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;">
+        Bắt đầu sử dụng →
+      </button>
+      <button
+        onclick="closeGuide(false)"
+        style="width:100%;padding:13px;background:#f1f5f9;color:#64748b;border:none;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">
+        Đóng
+      </button>
+      <div class="guide-by">BY NGUYỄN TRUNG TÍN</div>
+    </div>
   </div>
 </div>
 
