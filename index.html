@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ĐỊNH CƠ — AI Finance Coach</title>
-<!-- v32: Hướng dẫn sử dụng modal — first-time auto-show, sidebar + More sheet entry points -->
+<!-- v33: Paywall — Pain Shock Banner + Breakdown Preview + 10k Unlock + Simulated payment -->
 
 <!-- ── v22: Brand meta ── -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -878,6 +878,236 @@ textarea { resize: vertical; min-height: 60px; }
   padding: 12px 0 0;
 }
 
+
+/* ══ PAYWALL SYSTEM ══════════════════════════════════════════════ */
+
+/* Pain trigger banner — xuất hiện trên dashboard */
+.pain-banner {
+  display: none;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  border: 1px solid rgba(139,92,246,.3);
+  position: relative;
+  overflow: hidden;
+}
+.pain-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(239,68,68,.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.pain-banner.show { display: block; }
+.pain-banner-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  color: #a78bfa; text-transform: uppercase; margin-bottom: 6px;
+}
+.pain-banner-headline {
+  font-size: 20px; font-weight: 800; color: #fff;
+  line-height: 1.3; margin-bottom: 6px;
+}
+.pain-banner-headline .pain-amount {
+  color: #f87171;
+}
+.pain-banner-sub {
+  font-size: 13px; color: #a5b4fc; line-height: 1.5; margin-bottom: 14px;
+}
+.pain-banner-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #7c3aed; color: #fff;
+  padding: 10px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 700;
+  border: none; cursor: pointer; font-family: inherit;
+  transition: background .15s;
+}
+.pain-banner-cta:hover { background: #6d28d9; }
+.pain-banner-dismiss {
+  position: absolute; top: 12px; right: 14px;
+  background: none; border: none; color: rgba(255,255,255,.3);
+  font-size: 16px; cursor: pointer; padding: 4px;
+  line-height: 1;
+}
+
+/* Paywall overlay */
+.paywall-overlay {
+  display: none; position: fixed; inset: 0; z-index: 1300;
+  background: rgba(10,10,20,.85);
+  align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.paywall-overlay.open { display: flex; }
+.paywall-sheet {
+  background: #0f172a;
+  border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 520px;
+  padding: 0 0 calc(28px + env(safe-area-inset-bottom));
+  animation: slideUp .28s cubic-bezier(.34,1.56,.64,1);
+  max-height: 96vh; overflow-y: auto;
+}
+
+/* Header gradient */
+.paywall-header {
+  background: linear-gradient(160deg, #1e1b4b 0%, #312e81 60%, #1e3a5f 100%);
+  padding: 28px 24px 24px;
+  text-align: center;
+  border-radius: 24px 24px 0 0;
+  position: relative;
+}
+.paywall-close {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(255,255,255,.1); border: none;
+  width: 30px; height: 30px; border-radius: 50%;
+  color: rgba(255,255,255,.6); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.paywall-icon { font-size: 36px; margin-bottom: 8px; }
+.paywall-tag {
+  display: inline-block;
+  background: rgba(239,68,68,.2); color: #fca5a5;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  padding: 3px 10px; border-radius: 20px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.paywall-title {
+  font-size: 22px; font-weight: 800; color: #fff;
+  line-height: 1.3; margin-bottom: 8px;
+}
+.paywall-title .loss-amount { color: #f87171; }
+.paywall-subtitle { font-size: 13px; color: #94a3b8; line-height: 1.6; }
+
+/* Pain breakdown — blurred numbers */
+.paywall-breakdown {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.paywall-breakdown-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  color: #64748b; text-transform: uppercase; margin-bottom: 12px;
+}
+.breakdown-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.breakdown-item:last-child { border-bottom: none; }
+.breakdown-cat {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: #cbd5e1;
+}
+.breakdown-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.breakdown-val {
+  font-size: 13px; font-weight: 700; color: #f87171;
+}
+.breakdown-val.blurred {
+  filter: blur(4px);
+  user-select: none;
+  color: #f87171;
+  transition: filter .3s;
+}
+
+/* What you get */
+.paywall-unlock {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.unlock-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  color: #64748b; text-transform: uppercase; margin-bottom: 12px;
+}
+.unlock-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0;
+}
+.unlock-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(34,197,94,.2); color: #4ade80;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; flex-shrink: 0; margin-top: 1px;
+}
+.unlock-text { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+.unlock-text b { color: #fff; }
+
+/* Price + CTA */
+.paywall-cta-area {
+  padding: 20px 24px 0;
+}
+.price-compare {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-bottom: 16px;
+}
+.price-loss {
+  font-size: 13px; color: #64748b; text-decoration: line-through;
+}
+.price-main {
+  font-size: 32px; font-weight: 800; color: #fff;
+}
+.price-unit { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+.price-note {
+  text-align: center; font-size: 12px; color: #4ade80;
+  margin-bottom: 16px; line-height: 1.5;
+}
+.paywall-pay-btn {
+  width: 100%; padding: 18px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 17px; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  letter-spacing: .01em;
+  box-shadow: 0 4px 20px rgba(124,58,237,.4);
+  transition: opacity .15s, transform .1s;
+  margin-bottom: 10px;
+}
+.paywall-pay-btn:active { opacity: .9; transform: scale(.99); }
+.paywall-skip {
+  width: 100%; padding: 12px;
+  background: none; border: none;
+  font-size: 13px; color: #475569;
+  cursor: pointer; font-family: inherit;
+}
+.paywall-trust {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+.trust-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: #475569;
+}
+
+/* Unlocked state */
+.paywall-unlocked-badge {
+  display: none;
+  align-items: center; gap: 8px;
+  background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.2);
+  color: #4ade80; border-radius: 8px; padding: 8px 14px;
+  font-size: 12px; font-weight: 600;
+  margin-bottom: 16px;
+}
+.paywall-unlocked-badge.show { display: flex; }
+
+/* Insight section — locked behind paywall */
+.insights-locked {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.insights-locked-blur {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+.insights-lock-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(15,23,42,.95) 40%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding: 20px;
+}
+
 </style>
 </head>
 <body>
@@ -1025,6 +1255,12 @@ textarea { resize: vertical; min-height: 60px; }
     </button>
   </div>
 
+  <!-- Unlocked badge -->
+  <div class="paywall-unlocked-badge" id="unlocked-badge">
+    ✅ Báo cáo đã được mở khóa — tất cả số liệu hiển thị đầy đủ
+  </div>
+
+  <!-- Pain banner -->
   <!-- Sample data banner -->
   <div class="sample-banner" id="sample-banner">
     <span>✨</span>
@@ -2637,6 +2873,12 @@ function renderDashboard() {
       </div>`;
 
   renderCharts(s);
+  // Paywall: update pain banner after each render
+  if (!sessionStorage.getItem('pain_dismissed')) {
+    setTimeout(() => updatePainBanner(), 300);
+  }
+  // Restore unlocked state if paid
+  if (localStorage.getItem(PW_KEY)) showUnlockedState();
 }
 
 function renderCharts(s) {
@@ -2873,6 +3115,202 @@ function resetAllData() {
   showToast('🗑 Đã xóa toàn bộ dữ liệu');
 }
 
+
+// ══════════════════════════════════════════════════════════════════
+// PAYWALL SYSTEM — v33
+// ══════════════════════════════════════════════════════════════════
+
+const PW_KEY = 'dc_unlocked';
+
+function calcWaste(s) {
+  const optimal = s.income * 0.7;
+  return Math.max(0, Math.round((s.expense - optimal) / 1000) * 1000);
+}
+
+function getTopCat() {
+  const now = new Date();
+  const m = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const cats = {};
+  db.transactions
+    .filter(function(t){ return t.type === 'expense' && t.date.startsWith(m); })
+    .forEach(function(t){ cats[t.cat] = (cats[t.cat] || 0) + t.amount; });
+  const sorted = Object.entries(cats).sort(function(a,b){ return b[1]-a[1]; });
+  return sorted[0] || null;
+}
+
+function fmtShort(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1).replace('.0','') + ' triệu';
+  if (n >= 1000)    return Math.round(n/1000) + 'k';
+  return n.toString();
+}
+
+function updatePainBanner() {
+  const banner = document.getElementById('pain-banner');
+  if (!banner) return;
+  if (localStorage.getItem(PW_KEY)) {
+    banner.classList.remove('show');
+    showUnlockedState();
+    return;
+  }
+  if (sessionStorage.getItem('pain_dismissed')) return;
+
+  const s = calcStats();
+  const now = new Date();
+  const m = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const monthTx = db.transactions.filter(function(t){ return t.date.startsWith(m); });
+  const expCount = monthTx.filter(function(t){ return t.type==='expense'; }).length;
+
+  if (s.income <= 0 || expCount < 2) { banner.classList.remove('show'); return; }
+
+  const waste = calcWaste(s);
+  const topCat = getTopCat();
+  const topPct = topCat && s.expense > 0 ? Math.round(topCat[1]/s.expense*100) : 0;
+
+  let headline, sub;
+
+  if (s.savingRate < 0) {
+    const over = Math.abs(s.saving);
+    document.getElementById('pain-amount-text').textContent = fmtShort(over) + 'đ';
+    headline = 'Chi tiêu vượt thu nhập <span class="pain-amount">' + fmtShort(over) + 'đ</span> tháng này';
+    sub = topCat
+      ? '"' + topCat[0] + '" đang chiếm ' + topPct + '% tổng chi tiêu. Tiếp tục như vậy, bạn sẽ thiếu tiền cuối tháng.'
+      : 'Bạn đang chi nhiều hơn kiếm được. Xem ngay để biết cần cắt khoản nào.';
+  } else if (s.savingRate < 10) {
+    const couldSave = Math.round(s.income * 0.2 - s.saving);
+    document.getElementById('pain-amount-text').textContent = fmtShort(couldSave) + 'đ';
+    headline = 'Bạn đang bỏ lỡ <span class="pain-amount">' + fmtShort(couldSave) + 'đ</span> tiết kiệm mỗi tháng';
+    sub = topCat
+      ? '"' + topCat[0] + '" chiếm ' + topPct + '% chi tiêu. Giảm 20% khoản này là đủ đạt mục tiêu tiết kiệm.'
+      : 'Tỷ lệ tiết kiệm dưới 10%. Xem chi tiết để biết cần thay đổi gì.';
+  } else if (waste > 200000) {
+    document.getElementById('pain-amount-text').textContent = fmtShort(waste) + 'đ';
+    headline = 'Bạn đang tiêu dư khoảng <span class="pain-amount">' + fmtShort(waste) + 'đ</span>/tháng';
+    sub = topCat
+      ? '"' + topCat[0] + '" tốn ' + fmtShort(topCat[1]) + 'đ — chiếm ' + topPct + '% tổng chi. Có thể tối ưu ngay.'
+      : 'Mức chi tiêu cao hơn mức tối ưu. Xem báo cáo để biết cần cắt gì.';
+  } else if (topCat && topPct > 35) {
+    document.getElementById('pain-amount-text').textContent = fmtShort(topCat[1]) + 'đ';
+    headline = '"' + topCat[0] + '" đang ngốn <span class="pain-amount">' + fmtShort(topCat[1]) + 'đ</span>/tháng';
+    sub = 'Chiếm ' + topPct + '% tổng chi tiêu — cao hơn mức lý tưởng. Xem báo cáo để tối ưu.';
+  } else {
+    banner.classList.remove('show'); return;
+  }
+
+  document.getElementById('pain-headline').innerHTML = headline;
+  document.getElementById('pain-sub').textContent = sub;
+  banner.classList.add('show');
+}
+
+function dismissPainBanner() {
+  document.getElementById('pain-banner').classList.remove('show');
+  sessionStorage.setItem('pain_dismissed','1');
+}
+
+function openPaywall() {
+  const s = calcStats();
+  const topCat = getTopCat();
+  const waste = calcWaste(s);
+  const isUnlocked = !!localStorage.getItem(PW_KEY);
+
+  // Populate loss amount
+  const lossEl = document.getElementById('pw-loss-amount');
+  if (lossEl) {
+    if (s.savingRate < 0)  lossEl.textContent = fmtShort(Math.abs(s.saving)) + 'đ';
+    else if (waste > 0)    lossEl.textContent = fmtShort(waste) + 'đ';
+    else if (topCat)       lossEl.textContent = fmtShort(topCat[1]) + 'đ cho "' + topCat[0] + '"';
+  }
+
+  // Price note
+  const noteEl = document.getElementById('pw-price-note');
+  if (noteEl && waste > 0) {
+    noteEl.innerHTML = '&#128161; 10.000đ để biết cách thu hồi lại <b style="color:#4ade80;">' + fmtShort(waste) + 'đ/tháng</b>.<br>Đầu tư có lời nhất bạn từng làm.';
+  }
+
+  // Render breakdown
+  const now = new Date();
+  const m = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const cats = {};
+  db.transactions
+    .filter(function(t){ return t.type==='expense' && t.date.startsWith(m); })
+    .forEach(function(t){ cats[t.cat]=(cats[t.cat]||0)+t.amount; });
+  const sorted = Object.entries(cats).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+  const colors = ['#f87171','#fb923c','#fbbf24','#a78bfa','#60a5fa'];
+
+  const list = document.getElementById('pw-breakdown-list');
+  if (list) {
+    if (sorted.length) {
+      list.innerHTML = sorted.map(function(entry, i){
+        return '<div class="breakdown-item">'
+          + '<div class="breakdown-cat">'
+          + '<div class="breakdown-dot" style="background:' + (colors[i]||'#94a3b8') + '"></div>'
+          + entry[0] + '</div>'
+          + '<div class="breakdown-val ' + (isUnlocked ? '' : 'blurred') + '">' + fmtShort(entry[1]) + 'đ</div>'
+          + '</div>';
+      }).join('');
+    } else {
+      list.innerHTML = '<div style="font-size:13px;color:#475569;padding:8px 0;">Chưa đủ dữ liệu chi tiêu.</div>';
+    }
+  }
+
+  if (isUnlocked) {
+    _showPaywallUnlocked(); return;
+  }
+
+  document.getElementById('paywall-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePaywall() {
+  document.getElementById('paywall-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function simulatePayment() {
+  const btn = document.querySelector('.paywall-pay-btn');
+  if (btn) { btn.textContent = '⏳ Đang xử lý...'; btn.disabled = true; }
+  setTimeout(function(){
+    localStorage.setItem(PW_KEY, '1');
+    closePaywall();
+    document.querySelectorAll('.blurred').forEach(function(el){ el.classList.remove('blurred'); });
+    showUnlockedState();
+    _showUnlockCelebration();
+  }, 1200);
+}
+
+function showUnlockedState() {
+  var badge = document.getElementById('unlocked-badge');
+  if (badge) badge.classList.add('show');
+  var pb = document.getElementById('pain-banner');
+  if (pb) pb.classList.remove('show');
+}
+
+function _showPaywallUnlocked() {
+  document.querySelectorAll('.blurred').forEach(function(el){ el.classList.remove('blurred'); });
+  var btn = document.querySelector('.paywall-pay-btn');
+  if (btn) {
+    btn.textContent = '✅ Đã mở khóa — Đóng';
+    btn.style.background = 'linear-gradient(135deg,#059669,#0891b2)';
+    btn.onclick = closePaywall;
+    btn.disabled = false;
+  }
+  document.getElementById('paywall-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function _showUnlockCelebration() {
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;inset:0;z-index:1400;background:rgba(10,10,20,.9);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease;';
+  el.innerHTML = '<div style="text-align:center;max-width:320px;">'
+    + '<div style="font-size:60px;margin-bottom:16px;">&#127881;</div>'
+    + '<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;">Đã mở khóa!</div>'
+    + '<div style="font-size:14px;color:#94a3b8;line-height:1.7;margin-bottom:24px;">Tất cả số liệu chi tiêu đã hiển thị đầy đủ.<br>Không còn con số bị che nữa.</div>'
+    + '<button onclick="this.closest('[style]').remove()" style="padding:14px 28px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;display:block;width:100%;margin-bottom:8px;">Xem Dashboard &#8594;</button>'
+    + '<button onclick="this.closest('[style]').remove()" style="padding:12px;background:none;border:none;font-size:13px;color:#475569;cursor:pointer;font-family:inherit;width:100%;">Đóng</button>'
+    + '</div>';
+  document.body.appendChild(el);
+  el.addEventListener('click', function(e){ if(e.target===el) el.remove(); });
+}
+
 // ═══════════════════════════════════
 // INIT
 // ═══════════════════════════════════
@@ -2881,6 +3319,8 @@ renderGoals();
 initWelcome();
 initGuide();
 initA2hs();
+// Paywall: restore unlocked state on load
+if (localStorage.getItem(PW_KEY)) showUnlockedState();
 </script>
 
 
@@ -3054,6 +3494,96 @@ initA2hs();
       </button>
       <div class="guide-by">BY NGUYỄN TRUNG TÍN</div>
     </div>
+  </div>
+</div>
+
+
+<!-- ══ PAIN BANNER (dashboard) ══ -->
+<div class="pain-banner" id="pain-banner" onclick="openPaywall()">
+  <button class="pain-banner-dismiss" onclick="event.stopPropagation();dismissPainBanner()" aria-label="Đóng">✕</button>
+  <div class="pain-banner-label">⚠️ Phân tích tài chính</div>
+  <div class="pain-banner-headline" id="pain-headline">
+    Bạn đang để thất thoát <span class="pain-amount" id="pain-amount-text">—</span>/tháng
+  </div>
+  <div class="pain-banner-sub" id="pain-sub">
+    Khoản chi lớn nhất chiếm quá nhiều thu nhập của bạn. Xem ngay để kiểm soát.
+  </div>
+  <button class="pain-banner-cta">
+    🔍 Xem phân tích chi tiết →
+  </button>
+</div>
+
+<!-- ══ PAYWALL MODAL ══ -->
+<div class="paywall-overlay" id="paywall-overlay">
+  <div class="paywall-sheet">
+
+    <!-- Header -->
+    <div class="paywall-header">
+      <button class="paywall-close" onclick="closePaywall()">✕</button>
+      <div class="paywall-icon">🔍</div>
+      <div class="paywall-tag" id="pw-tag">Phân tích tài chính cá nhân</div>
+      <div class="paywall-title" id="pw-title">
+        Bạn đang mất <span class="loss-amount" id="pw-loss-amount">—</span> mỗi tháng
+      </div>
+      <div class="paywall-subtitle" id="pw-subtitle">
+        Chi tiêu của bạn đang bị rò rỉ ở những khoản không đáng.<br>
+        Unlock báo cáo để biết chính xác cần cắt gì.
+      </div>
+    </div>
+
+    <!-- Breakdown preview — blurred -->
+    <div class="paywall-breakdown">
+      <div class="paywall-breakdown-title">Breakdown chi tiêu tháng này</div>
+      <div id="pw-breakdown-list">
+        <!-- JS rendered -->
+      </div>
+    </div>
+
+    <!-- What you unlock -->
+    <div class="paywall-unlock">
+      <div class="unlock-title">Bạn nhận được gì khi mở khóa</div>
+      <div class="unlock-item">
+        <div class="unlock-check">✓</div>
+        <div class="unlock-text"><b>Danh mục chi tiêu cần cắt ngay</b> — số tiền cụ thể, không chung chung</div>
+      </div>
+      <div class="unlock-item">
+        <div class="unlock-check">✓</div>
+        <div class="unlock-text"><b>Kế hoạch tiết kiệm cá nhân hóa</b> — dựa trên thu nhập thực tế của bạn</div>
+      </div>
+      <div class="unlock-item">
+        <div class="unlock-check">✓</div>
+        <div class="unlock-text"><b>Cảnh báo sớm khi chi tiêu vượt ngưỡng</b> — trước khi hết tiền</div>
+      </div>
+      <div class="unlock-item">
+        <div class="unlock-check">✓</div>
+        <div class="unlock-text"><b>Dự báo số dư cuối tháng</b> — biết trước còn bao nhiêu</div>
+      </div>
+    </div>
+
+    <!-- Price + CTA -->
+    <div class="paywall-cta-area">
+      <div class="price-compare">
+        <div>
+          <div class="price-main">10.000đ</div>
+          <div class="price-unit" style="text-align:center;">một lần duy nhất</div>
+        </div>
+      </div>
+      <div class="price-note" id="pw-price-note">
+        💡 Ít hơn 1 ly cà phê.<br>
+        Nhưng giúp bạn biết mình đang mất tiền ở đâu.
+      </div>
+      <button class="paywall-pay-btn" onclick="simulatePayment()">
+        🔓 Mở khóa báo cáo — 10.000đ
+      </button>
+      <button class="paywall-skip" onclick="closePaywall()">
+        Để sau, tôi chưa cần
+      </button>
+      <div class="paywall-trust">
+        <div class="trust-item">🔒 Dữ liệu lưu trên máy bạn</div>
+        <div class="trust-item">📵 Không kết nối ngân hàng</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
