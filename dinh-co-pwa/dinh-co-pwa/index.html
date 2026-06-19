@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ĐỊNH CƠ – Muscle Meal Planner</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#166534">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ĐỊNH CƠ">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-900: #0d3320;
+    --green-800: #14532d;
+    --green-700: #166534;
+    --green-600: #16a34a;
+    --green-500: #22c55e;
+    --green-400: #4ade80;
+    --green-100: #dcfce7;
+    --green-50:  #f0fdf4;
+    --white:     #ffffff;
+    --gray-900:  #111827;
+    --gray-700:  #374151;
+    --gray-500:  #6b7280;
+    --gray-300:  #d1d5db;
+    --gray-100:  #f3f4f6;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.13);
+    --radius:    14px;
+    --radius-sm: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--green-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 100%);
+    color: var(--white);
+    padding: 28px 20px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+  .brand-name {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .brand-sub {
+    font-size: .85rem;
+    opacity: .85;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .brand-by {
+    font-size: .75rem;
+    opacity: .65;
+    margin-top: 6px;
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green-700);
+    margin: 28px 0 10px;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+    animation: fadeUp .35s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== FORM ===== */
+  .form-row { display: flex; gap: 12px; }
+  .form-group { flex: 1; margin-bottom: 14px; }
+  label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+  }
+  input[type="number"], select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: .95rem;
+    color: var(--gray-900);
+    background: var(--white);
+    transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--green-500);
+    box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+  }
+
+  /* ===== TOGGLE GROUP ===== */
+  .toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toggle-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 9px 6px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    text-align: center;
+    transition: all .2s;
+  }
+  .toggle-btn.active {
+    border-color: var(--green-600);
+    background: var(--green-100);
+    color: var(--green-800);
+  }
+
+  /* ===== BUTTON ===== */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .5px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green-700), var(--green-500));
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(22,163,74,.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-danger {
+    background: var(--white);
+    color: #dc2626;
+    border: 1.5px solid #fca5a5;
+    margin-top: 10px;
+  }
+  .btn-danger:hover { background: #fef2f2; }
+  .btn-sm {
+    width: auto;
+    padding: 9px 18px;
+    font-size: .85rem;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ===== RESULTS ===== */
+  #results { display: none; }
+  .macro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .macro-card {
+    border-radius: var(--radius-sm);
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .macro-card.kcal  { background: linear-gradient(135deg,#fef9c3,#fde68a); }
+  .macro-card.prot  { background: linear-gradient(135deg,#dcfce7,#bbf7d0); }
+  .macro-card.carb  { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+  .macro-card.fat   { background: linear-gradient(135deg,#fce7f3,#fbcfe8); }
+  .macro-val {
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .macro-card.kcal .macro-val  { color: #92400e; }
+  .macro-card.prot .macro-val  { color: var(--green-800); }
+  .macro-card.carb .macro-val  { color: #1e40af; }
+  .macro-card.fat  .macro-val  { color: #9d174d; }
+  .macro-unit { font-size: .75rem; font-weight: 600; opacity: .75; margin-top: 2px; }
+  .macro-label { font-size: .7rem; opacity: .65; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ===== FOOD SUGGESTION ===== */
+  .food-list { list-style: none; }
+  .food-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: .9rem;
+  }
+  .food-list li:last-child { border-bottom: none; }
+  .food-icon { font-size: 1.3rem; }
+  .food-name { flex: 1; font-weight: 600; color: var(--gray-700); }
+  .food-macro { font-size: .78rem; color: var(--gray-500); }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-item { margin-bottom: 14px; }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--gray-700);
+  }
+  .progress-pct { color: var(--green-700); }
+  .progress-track {
+    height: 10px;
+    background: var(--gray-100);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+  }
+  .fill-kcal  { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+  .fill-prot  { background: linear-gradient(90deg,var(--green-700),var(--green-400)); }
+  .fill-carb  { background: linear-gradient(90deg,#3b82f6,#60a5fa); }
+  .fill-fat   { background: linear-gradient(90deg,#ec4899,#f472b6); }
+  .fill-over  { background: linear-gradient(90deg,#ef4444,#f87171) !important; }
+
+  /* ===== LOG FOOD ===== */
+  .log-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 10px;
+  }
+  .log-row .form-group { margin-bottom: 0; }
+  .log-entries { margin-top: 14px; }
+  .log-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 12px;
+    background: var(--green-50);
+    border-radius: var(--radius-sm);
+    margin-bottom: 7px;
+    font-size: .85rem;
+    animation: fadeUp .25s ease both;
+  }
+  .log-entry-name { font-weight: 600; color: var(--gray-700); }
+  .log-entry-macro { color: var(--gray-500); font-size: .78rem; margin-top: 2px; }
+  .log-remove {
+    background: none;
+    border: none;
+    color: var(--gray-300);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color .2s;
+  }
+  .log-remove:hover { color: #ef4444; }
+
+  /* ===== TOTALS ===== */
+  .totals-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .total-chip {
+    flex: 1;
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--gray-100);
+  }
+  .total-chip-val { font-size: 1.15rem; font-weight: 800; color: var(--green-700); }
+  .total-chip-label { font-size: .67rem; color: var(--gray-500); margin-top: 2px; text-transform: uppercase; letter-spacing: .8px; }
+
+  /* ===== EMPTY STATE ===== */
+  .empty {
+    text-align: center;
+    color: var(--gray-500);
+    font-size: .85rem;
+    padding: 20px 0 8px;
+  }
+  .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    font-size: .72rem;
+    color: var(--gray-500);
+    margin-top: 32px;
+    padding: 0 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="brand-name">ĐỊNH CƠ</div>
+  <div class="brand-sub">Muscle Meal Planner · AI Fitness Coach</div>
+  <div class="brand-by">By Nguyễn Trung Tín</div>
+</header>
+
+<div class="container">
+
+  <!-- ===== THÔNG TIN CÁ NHÂN ===== -->
+  <p class="section-title">Thông tin cá nhân</p>
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tuổi</label>
+        <input type="number" id="age" placeholder="25" min="10" max="99">
+      </div>
+      <div class="form-group">
+        <label>Cân nặng (kg)</label>
+        <input type="number" id="weight" placeholder="70" min="30" max="250">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Chiều cao (cm)</label>
+        <input type="number" id="height" placeholder="170" min="100" max="250">
+      </div>
+      <div class="form-group">
+        <label>Giới tính</label>
+        <select id="gender">
+          <option value="male">Nam</option>
+          <option value="female">Nữ</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Mức vận động</label>
+    <div class="toggle-group" id="activity-group" style="margin-bottom:14px">
+      <button class="toggle-btn active" data-val="1.2">Ít</button>
+      <button class="toggle-btn" data-val="1.55">Trung bình</button>
+      <button class="toggle-btn" data-val="1.725">Cao</button>
+    </div>
+
+    <label>Mục tiêu</label>
+    <div class="toggle-group" id="goal-group">
+      <button class="toggle-btn active" data-val="bulk">Tăng cơ</button>
+      <button class="toggle-btn" data-val="cut">Giảm mỡ</button>
+      <button class="toggle-btn" data-val="maintain">Duy trì</button>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" onclick="calculate()">⚡ Tính toán ngay</button>
+
+  <!-- ===== KẾT QUẢ ===== -->
+  <div id="results">
+    <p class="section-title">Chỉ số hôm nay</p>
+    <div class="card">
+      <div class="macro-grid">
+        <div class="macro-card kcal">
+          <div class="macro-val" id="res-kcal">—</div>
+          <div class="macro-unit">kcal</div>
+          <div class="macro-label">Calories</div>
+        </div>
+        <div class="macro-card prot">
+          <div class="macro-val" id="res-prot">—</div>
+          <div class="macro-unit">g</div>
+          <div class="macro-label">Protein</div>
+        </div>
+        <div class="macro-card carb">
+          <div class="macro-val" id="res-carb">—</div>
+          <div class="macro-unit">g</div>
+          <div class="macro-label">Carb</div>
+        </div>
+        <div class="macro-card fat">
+          <div class="macro-val" id="res-fat">—</div>
+          <div class="macro-unit">g</div>
+          <div class="macro-label">Fat</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GỢI Ý THỰC ĐƠN -->
+    <p class="section-title">Gợi ý đạt Protein hôm nay</p>
+    <div class="card">
+      <ul class="food-list" id="suggestion-list"></ul>
+      <p style="font-size:.72rem;color:var(--gray-500);margin-top:10px">* Chỉ mang tính tham khảo. Điều chỉnh theo khẩu vị.</p>
+    </div>
+
+    <!-- THEO DÕI BỮA ĂN -->
+    <p class="section-title">Nhật ký ăn uống hôm nay</p>
+    <div class="card">
+      <div class="log-row">
+        <div class="form-group" style="flex:2">
+          <label>Chọn thực phẩm</label>
+          <select id="food-select"></select>
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>Số lượng</label>
+          <input type="number" id="food-qty" placeholder="100" min="1" max="2000">
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addFood()">+ Thêm vào nhật ký</button>
+
+      <!-- TỔNG ĂN -->
+      <div class="totals-row">
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-kcal">0</div>
+          <div class="total-chip-label">kcal</div>
+        </div>
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-prot">0g</div>
+          <div class="total-chip-label">Protein</div>
+        </div>
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-carb">0g</div>
+          <div class="total-chip-label">Carb</div>
+        </div>
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-fat">0g</div>
+          <div class="total-chip-label">Fat</div>
+        </div>
+      </div>
+
+      <!-- LOG ENTRIES -->
+      <div class="log-entries" id="log-entries">
+        <div class="empty"><div class="empty-icon">🥗</div>Chưa có thực phẩm nào.<br>Thêm bữa ăn đầu tiên!</div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <p class="section-title">Tiến độ hôm nay</p>
+    <div class="card">
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>🔥 Calories</span>
+          <span class="progress-pct" id="pct-kcal">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-kcal" id="bar-kcal" style="width:0%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>💪 Protein</span>
+          <span class="progress-pct" id="pct-prot">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-prot" id="bar-prot" style="width:0%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>🌾 Carb</span>
+          <span class="progress-pct" id="pct-carb">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-carb" id="bar-carb" style="width:0%"></div></div>
+      </div>
+      <div class="progress-item" style="margin-bottom:0">
+        <div class="progress-header">
+          <span>🥑 Fat</span>
+          <span class="progress-pct" id="pct-fat">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-fat" id="bar-fat" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-danger" onclick="clearToday()">🗑 Xóa dữ liệu hôm nay</button>
+  </div>
+
+</div>
+
+<footer>
+  <p>ĐỊNH CƠ © 2024 · Nguyễn Trung Tín · Mọi số liệu chỉ mang tính tham khảo</p>
+</footer>
+
+<script>
+// ===== DATABASE THỰC PHẨM VIỆT NAM =====
+// protein/100g, carb/100g, fat/100g, kcal/100g, đơn vị
+const FOODS = [
+  { id:'chicken', name:'Ức gà',       unit:'g',  prot:31,  carb:0,    fat:3.6, kcal:165, icon:'🍗', base:100 },
+  { id:'beef',    name:'Thịt bò',     unit:'g',  prot:26,  carb:0,    fat:17,  kcal:250, icon:'🥩', base:100 },
+  { id:'tilapia', name:'Cá rô phi',   unit:'g',  prot:20,  carb:0,    fat:4,   kcal:128, icon:'🐟', base:100 },
+  { id:'egg',     name:'Trứng gà',    unit:'quả',prot:6,   carb:0.6,  fat:5,   kcal:70,  icon:'🥚', base:1   },
+  { id:'milk',    name:'Sữa tươi',    unit:'ml', prot:3.2, carb:4.8,  fat:3.5, kcal:60,  icon:'🥛', base:100 },
+  { id:'oats',    name:'Yến mạch',    unit:'g',  prot:13,  carb:67,   fat:7,   kcal:389, icon:'🌾', base:100 },
+  { id:'rice',    name:'Cơm trắng',   unit:'g',  prot:2.7, carb:28,   fat:0.3, kcal:130, icon:'🍚', base:100 },
+  { id:'banana',  name:'Chuối',       unit:'quả',prot:1.3, carb:27,   fat:0.3, kcal:105, icon:'🍌', base:1   },
+];
+
+// State
+let targets = { kcal:0, prot:0, carb:0, fat:0 };
+let log = [];      // [{foodId, qty, name, kcal, prot, carb, fat}]
+let activityVal = 1.2;
+let goalVal = 'bulk';
+
+// ===== KHỞI TẠO =====
+window.addEventListener('DOMContentLoaded', () => {
+  buildFoodSelect();
+  loadStorage();
+  setupToggleGroups();
+});
+
+function buildFoodSelect() {
+  const sel = document.getElementById('food-select');
+  FOODS.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = `${f.icon} ${f.name} (/${f.unit})`;
+    sel.appendChild(opt);
+  });
+}
+
+function setupToggleGroups() {
+  document.querySelectorAll('.toggle-group').forEach(group => {
+    group.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (group.id === 'activity-group') activityVal = parseFloat(btn.dataset.val);
+        if (group.id === 'goal-group')     goalVal = btn.dataset.val;
+        saveProfile();
+      });
+    });
+  });
+}
+
+// ===== TÍNH TOÁN TDEE =====
+function calculate() {
+  const age    = parseFloat(document.getElementById('age').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const gender = document.getElementById('gender').value;
+
+  if (!age || !weight || !height) {
+    alert('Vui lòng nhập đầy đủ tuổi, cân nặng và chiều cao!');
+    return;
+  }
+
+  // Mifflin-St Jeor BMR
+  let bmr;
+  if (gender === 'male') {
+    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+  } else {
+    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+
+  let tdee = bmr * activityVal;
+
+  // Điều chỉnh theo mục tiêu
+  if (goalVal === 'bulk')     tdee = tdee + 300;
+  if (goalVal === 'cut')      tdee = tdee - 400;
+  // maintain: giữ nguyên
+
+  // Macros
+  let protMult = goalVal === 'bulk' ? 2.0 : goalVal === 'cut' ? 2.2 : 1.6;
+  const prot = Math.round(weight * protMult);
+  const fat  = Math.round((tdee * 0.25) / 9);
+  const protKcal = prot * 4;
+  const fatKcal  = fat  * 9;
+  const carb = Math.round((tdee - protKcal - fatKcal) / 4);
+  const kcal = Math.round(tdee);
+
+  targets = { kcal, prot, carb, fat };
+
+  // Hiển thị
+  document.getElementById('res-kcal').textContent = kcal;
+  document.getElementById('res-prot').textContent = prot;
+  document.getElementById('res-carb').textContent = carb;
+  document.getElementById('res-fat').textContent  = fat;
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  buildSuggestion(prot);
+  updateProgress();
+  saveProfile();
+}
+
+// ===== GỢI Ý THỰC ĐƠN =====
+function buildSuggestion(targetProt) {
+  const list = document.getElementById('suggestion-list');
+  list.innerHTML = '';
+
+  // Gợi ý đơn giản: ức gà + trứng + cá + sữa
+  const suggestions = [
+    { food: FOODS[0], qty: Math.round(targetProt * 0.45 / FOODS[0].prot * 100) }, // ức gà 45%
+    { food: FOODS[2], qty: Math.round(targetProt * 0.25 / FOODS[2].prot * 100) }, // cá rô phi 25%
+    { food: FOODS[3], qty: Math.round(targetProt * 0.15 / FOODS[3].prot)       }, // trứng 15%
+    { food: FOODS[4], qty: Math.round(targetProt * 0.15 / FOODS[4].prot * 100) }, // sữa 15%
+  ];
+
+  suggestions.forEach(s => {
+    const f = s.food;
+    const qty = s.qty;
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span class="food-icon">${f.icon}</span>
+      <span class="food-name">${f.name}</span>
+      <span class="food-macro">${qty}${f.unit} · ${Math.round(f.prot * qty / f.base)}g protein</span>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ===== NHẬT KÝ ĂN UỐNG =====
+function addFood() {
+  const sel = document.getElementById('food-select');
+  const qty = parseFloat(document.getElementById('food-qty').value);
+  if (!qty || qty <= 0) { alert('Nhập số lượng hợp lệ!'); return; }
+
+  const food = FOODS.find(f => f.id === sel.value);
+  const ratio = qty / food.base;
+
+  const entry = {
+    id:   Date.now(),
+    name: food.name,
+    icon: food.icon,
+    unit: food.unit,
+    qty,
+    kcal: Math.round(food.kcal * ratio),
+    prot: Math.round(food.prot * ratio * 10) / 10,
+    carb: Math.round(food.carb * ratio * 10) / 10,
+    fat:  Math.round(food.fat  * ratio * 10) / 10,
+  };
+
+  log.push(entry);
+  document.getElementById('food-qty').value = '';
+  renderLog();
+  updateProgress();
+  saveLog();
+}
+
+function removeFood(id) {
+  log = log.filter(e => e.id !== id);
+  renderLog();
+  updateProgress();
+  saveLog();
+}
+
+function renderLog() {
+  const container = document.getElementById('log-entries');
+  if (log.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">🥗</div>Chưa có thực phẩm nào.<br>Thêm bữa ăn đầu tiên!</div>';
+    return;
+  }
+  container.innerHTML = '';
+  log.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `
+      <div>
+        <div class="log-entry-name">${e.icon} ${e.name} · ${e.qty}${e.unit}</div>
+        <div class="log-entry-macro">${e.kcal} kcal · P: ${e.prot}g · C: ${e.carb}g · F: ${e.fat}g</div>
+      </div>
+      <button class="log-remove" onclick="removeFood(${e.id})">✕</button>
+    `;
+    container.appendChild(div);
+  });
+
+  // Tổng
+  const totKcal = log.reduce((s,e) => s + e.kcal, 0);
+  const totProt = log.reduce((s,e) => s + e.prot, 0);
+  const totCarb = log.reduce((s,e) => s + e.carb, 0);
+  const totFat  = log.reduce((s,e) => s + e.fat,  0);
+  document.getElementById('eaten-kcal').textContent = totKcal;
+  document.getElementById('eaten-prot').textContent = totProt.toFixed(1) + 'g';
+  document.getElementById('eaten-carb').textContent = totCarb.toFixed(1) + 'g';
+  document.getElementById('eaten-fat').textContent  = totFat.toFixed(1)  + 'g';
+}
+
+// ===== PROGRESS BARS =====
+function updateProgress() {
+  if (!targets.kcal) return;
+
+  const totKcal = log.reduce((s,e) => s + e.kcal, 0);
+  const totProt = log.reduce((s,e) => s + e.prot, 0);
+  const totCarb = log.reduce((s,e) => s + e.carb, 0);
+  const totFat  = log.reduce((s,e) => s + e.fat,  0);
+
+  setBar('kcal', totKcal, targets.kcal, 'fill-kcal');
+  setBar('prot', totProt, targets.prot, 'fill-prot');
+  setBar('carb', totCarb, targets.carb, 'fill-carb');
+  setBar('fat',  totFat,  targets.fat,  'fill-fat');
+}
+
+function setBar(key, eaten, target, fillClass) {
+  const pct = target > 0 ? Math.min(Math.round(eaten / target * 100), 100) : 0;
+  const over = eaten > target;
+  const bar  = document.getElementById('bar-' + key);
+  bar.style.width = pct + '%';
+  bar.className = 'progress-fill ' + (over ? 'fill-over' : fillClass);
+  document.getElementById('pct-' + key).textContent = pct + '%' + (over ? ' ⚠️' : '');
+}
+
+// ===== XÓA DỮ LIỆU =====
+function clearToday() {
+  if (!confirm('Xóa toàn bộ nhật ký hôm nay? Hành động này không thể hoàn tác.')) return;
+  log = [];
+  renderLog();
+  updateProgress();
+  saveLog();
+}
+
+// ===== LOCAL STORAGE =====
+function saveProfile() {
+  localStorage.setItem('dc_profile', JSON.stringify({
+    age:    document.getElementById('age').value,
+    weight: document.getElementById('weight').value,
+    height: document.getElementById('height').value,
+    gender: document.getElementById('gender').value,
+    activity: activityVal,
+    goal: goalVal,
+    targets
+  }));
+}
+
+function saveLog() {
+  const today = new Date().toDateString();
+  localStorage.setItem('dc_log_' + today, JSON.stringify(log));
+}
+
+function loadStorage() {
+  // Profile
+  const p = JSON.parse(localStorage.getItem('dc_profile') || 'null');
+  if (p) {
+    if (p.age)    document.getElementById('age').value    = p.age;
+    if (p.weight) document.getElementById('weight').value = p.weight;
+    if (p.height) document.getElementById('height').value = p.height;
+    if (p.gender) document.getElementById('gender').value = p.gender;
+
+    if (p.activity) {
+      activityVal = p.activity;
+      document.querySelectorAll('#activity-group .toggle-btn').forEach(b => {
+        b.classList.toggle('active', parseFloat(b.dataset.val) === activityVal);
+      });
+    }
+    if (p.goal) {
+      goalVal = p.goal;
+      document.querySelectorAll('#goal-group .toggle-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.val === goalVal);
+      });
+    }
+    if (p.targets && p.targets.kcal) {
+      targets = p.targets;
+      document.getElementById('res-kcal').textContent = targets.kcal;
+      document.getElementById('res-prot').textContent = targets.prot;
+      document.getElementById('res-carb').textContent = targets.carb;
+      document.getElementById('res-fat').textContent  = targets.fat;
+      document.getElementById('results').style.display = 'block';
+      buildSuggestion(targets.prot);
+    }
+  }
+
+  // Log hôm nay
+  const today = new Date().toDateString();
+  const saved = localStorage.getItem('dc_log_' + today);
+  if (saved) {
+    log = JSON.parse(saved);
+    renderLog();
+    updateProgress();
+  }
+}
+</script>
+<script>
+// ===== ĐĂNG KÝ SERVICE WORKER =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('SW registered'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>
