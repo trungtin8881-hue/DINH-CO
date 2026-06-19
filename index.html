@@ -2,2817 +2,786 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ĐỊNH CƠ — AI Finance Coach</title>
-<!-- v31: Export success modal + file location guide + Messenger warning + Import plain language + error diagnosis -->
-
-<!-- ── v22: Brand meta ── -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Định Cơ">
-<meta name="application-name" content="Định Cơ">
-<meta name="description" content="ĐỊNH CƠ — AI Finance Coach. Phiên bản hoàn thiện của Trung Tín Fin Coach. Dữ liệu tài chính của bạn chỉ thuộc về bạn.">
-
-<!-- ── v22: Favicon & Apple Touch Icon via Data URI ── -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Cpath d='M9 22 L9 14 L13 14 L13 22 M14 22 L14 10 L18 10 L18 22 M19 22 L19 16 L23 16 L23 22' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230f172a'/%3E%3Crect x='20' y='20' width='140' height='140' rx='28' fill='%232563eb'/%3E%3Cpath d='M50 130 L50 105 L72 105 L72 130 M78 130 L78 75 L100 75 L100 130 M106 130 L106 90 L128 90 L128 130' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
-
-
-
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ĐỊNH CƠ – Muscle Meal Planner</title>
 <style>
-/* ════════════════════════════════════════════════
-   DESIGN TOKENS — v22 ĐỊNH CƠ
-════════════════════════════════════════════════ */
-:root {
-  --bg:            #f5f7fa;
-  --surface:       #ffffff;
-  --surface-2:     #f9fafc;
-  --border:        #e8ecf2;
-  --border-2:      #d1d9e6;
-  --text:          #111827;
-  --text-2:        #374151;
-  --muted:         #6b7280;
-  --muted-2:       #9ca3af;
-
-  --primary:       #2563eb;
-  --primary-dark:  #1d4ed8;
-  --primary-light: #eff6ff;
-  --primary-mid:   #93c5fd;
-
-  --green:         #059669;
-  --green-light:   #ecfdf5;
-  --green-mid:     #6ee7b7;
-
-  --red:           #dc2626;
-  --red-light:     #fef2f2;
-  --red-mid:       #fca5a5;
-
-  --amber:         #d97706;
-  --amber-light:   #fffbeb;
-
-  --purple:        #7c3aed;
-  --purple-light:  #f5f3ff;
-
-  --radius-sm:     8px;
-  --radius:        12px;
-  --radius-lg:     16px;
-  --radius-xl:     20px;
-
-  --shadow-sm:     0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-  --shadow:        0 4px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.05);
-  --shadow-lg:     0 10px 32px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.06);
-
-  --sidebar-w: 248px;
-  --transition: .18s cubic-bezier(.4,0,.2,1);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── LAYOUT ── */
-.app { display: flex; min-height: 100vh; }
-
-/* ── SIDEBAR ── */
-.sidebar {
-  width: var(--sidebar-w);
-  background: #0f172a;
-  position: fixed;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-}
-.sidebar-logo {
-  padding: 22px 20px 18px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-/* v22: ĐỊNH CƠ logo mark */
-.logo-mark { display: flex; align-items: center; gap: 11px; }
-.logo-svg-wrap {
-  width: 36px; height: 36px;
-  background: var(--primary);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(37,99,235,.35);
-}
-.logo-svg-wrap svg { width: 20px; height: 20px; }
-.logo-text-wrap {}
-.logo-brand   { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
-.logo-tagline { color: rgba(255,255,255,.45); font-size: 10px; font-weight: 500; letter-spacing: .03em; margin-top: 1px; }
-/* v25: "BY NGUYỄN TRUNG TÍN" — cùng weight với logo-brand nhưng nhỏ hơn 1 bậc */
-.logo-by      { color: rgba(255,255,255,.55); font-size: 9px; font-weight: 700; margin-top: 3px;
-                letter-spacing: .12em; text-transform: uppercase; }
-
-.sidebar-nav { padding: 14px 12px; flex: 1; }
-.nav-group { font-size: 10px; letter-spacing: .1em; color: rgba(255,255,255,.25); text-transform: uppercase; margin: 14px 0 5px 10px; font-weight: 600; }
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  color: rgba(255,255,255,.52);
-  font-size: 13px; font-weight: 500;
-  transition: all var(--transition);
-  border: none; background: none;
-  width: 100%; text-align: left; margin-bottom: 2px;
-}
-.nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
-.nav-item.active { background: rgba(37,99,235,.22); color: #fff; }
-.nav-item.active .nav-icon { opacity: 1; color: var(--primary-mid); }
-.nav-icon { width: 17px; height: 17px; flex-shrink: 0; opacity: .6; }
-
-.sidebar-footer {
-  padding: 14px 12px;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-.trust-mini { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-.trust-mini-item {
-  display: flex; align-items: center; gap: 7px;
-  font-size: 11px; color: rgba(255,255,255,.32);
-}
-.trust-mini-item svg { width: 11px; height: 11px; flex-shrink: 0; }
-.sidebar-actions { display: flex; gap: 6px; margin-bottom: 8px; }
-.btn-sidebar {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
-  padding: 7px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.04);
-  color: rgba(255,255,255,.48);
-  font-family: inherit; font-size: 11px; font-weight: 500;
-  cursor: pointer; transition: all var(--transition);
-}
-.btn-sidebar:hover { background: rgba(255,255,255,.1); color: rgba(255,255,255,.85); }
-.btn-sidebar svg { width: 12px; height: 12px; }
-.btn-reset-sidebar {
-  display: flex; align-items: center; gap: 8px;
-  width: 100%; padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(220,38,38,.18);
-  background: none; color: rgba(248,113,113,.65);
-  font-family: inherit; font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all var(--transition);
-}
-.btn-reset-sidebar:hover { background: rgba(220,38,38,.1); color: #f87171; }
-.btn-reset-sidebar svg { width: 13px; height: 13px; }
-
-/* ── MAIN ── */
-.main { margin-left: var(--sidebar-w); padding: 28px 32px; width: 100%; min-height: 100vh; }
-.page { display: none; animation: fadeUp .22s ease; }
-.page.active { display: block; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── PAGE HEADER ── */
-.page-header { margin-bottom: 22px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.page-title { font-size: 21px; font-weight: 700; letter-spacing: -.02em; }
-.page-sub   { color: var(--muted); font-size: 13px; margin-top: 3px; }
-
-/* ── v22: HERO CARD ── */
-.hero-card {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3358 55%, #2563eb 100%);
-  border-radius: var(--radius-xl);
-  padding: 26px 28px 22px;
-  margin-bottom: 18px;
-  position: relative; overflow: hidden; color: #fff;
-}
-.hero-card::before {
-  content: ''; position: absolute; top: -50px; right: -50px;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(255,255,255,.055) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-card::after {
-  content: ''; position: absolute; bottom: -30px; left: 45%;
-  width: 140px; height: 140px;
-  background: radial-gradient(circle, rgba(37,99,235,.28) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-greeting { font-size: 13px; opacity: .6; font-weight: 500; margin-bottom: 3px; }
-.hero-subtitle  { font-size: 14px; opacity: .75; margin-bottom: 22px; }
-.hero-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.hero-stat { position: relative; z-index: 1; }
-.hero-stat-label { font-size: 10px; opacity: .5; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; }
-.hero-stat-val   { font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
-.hero-stat-sub   { font-size: 11px; opacity: .6; margin-top: 2px; }
-.hero-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 5px; }
-.hero-badge-green { background: rgba(5,150,105,.22); color: #6ee7b7; border: 1px solid rgba(5,150,105,.28); }
-.hero-badge-amber { background: rgba(217,119,6,.22); color: #fcd34d; border: 1px solid rgba(217,119,6,.28); }
-.hero-badge-red   { background: rgba(220,38,38,.22); color: #fca5a5; border: 1px solid rgba(220,38,38,.28); }
-
-/* ── v22: ADD TO HOME SCREEN BANNER ── */
-.a2hs-banner {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 12px;
-  box-shadow: var(--shadow-sm);
-  animation: fadeUp .25s ease;
-}
-.a2hs-banner.hidden { display: none; }
-.a2hs-icon {
-  width: 40px; height: 40px;
-  background: var(--primary-light);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; font-size: 20px;
-}
-.a2hs-content { flex: 1; }
-.a2hs-title { font-size: 13px; font-weight: 700; color: var(--text); }
-.a2hs-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; line-height: 1.5; }
-.a2hs-close {
-  background: none; border: none; cursor: pointer;
-  color: var(--muted-2); font-size: 18px; padding: 4px;
-  border-radius: 4px; transition: color var(--transition);
-  flex-shrink: 0; line-height: 1;
-}
-.a2hs-close:hover { color: var(--text); }
-
-/* ── STAT CARDS ── */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; margin-bottom: 18px; }
-.stat-card {
-  background: var(--surface); border-radius: var(--radius);
-  padding: 18px 20px; border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition), transform var(--transition);
-}
-.stat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
-.stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.stat-card-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.stat-card-icon svg { width: 17px; height: 17px; }
-.stat-card-icon.blue   { background: var(--primary-light); color: var(--primary); }
-.stat-card-icon.green  { background: var(--green-light); color: var(--green); }
-.stat-card-icon.red    { background: var(--red-light); color: var(--red); }
-.stat-card-icon.purple { background: var(--purple-light); color: var(--purple); }
-.stat-label  { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-.stat-val    { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 3px; }
-.stat-val.blue   { color: var(--primary); }
-.stat-val.green  { color: var(--green); }
-.stat-val.red    { color: var(--red); }
-.stat-val.purple { color: var(--purple); }
-.stat-change { font-size: 11px; margin-top: 2px; display: flex; align-items: center; gap: 3px; }
-.stat-change.up      { color: var(--green); }
-.stat-change.down    { color: var(--red); }
-.stat-change.neutral { color: var(--muted); }
-
-/* ── v22: TRUST CARD on Dashboard ── */
-.trust-card-dash {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  margin-bottom: 18px;
-  box-shadow: var(--shadow-sm);
-}
-.trust-card-dash-header {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 14px;
-}
-.trust-card-dash-header svg { width: 16px; height: 16px; color: var(--primary); }
-.trust-card-dash-title { font-size: 13px; font-weight: 700; color: var(--text); }
-.trust-card-dash-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.trust-check-item {
-  display: flex; align-items: flex-start; gap: 8px;
-  padding: 10px 12px;
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.trust-check-icon {
-  width: 18px; height: 18px;
-  background: var(--green-light);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; margin-top: 1px;
-  font-size: 10px;
-}
-.trust-check-text { font-size: 12px; font-weight: 600; color: var(--text-2); line-height: 1.4; }
-
-/* ── CHARTS ── */
-.charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 18px; }
-.card { background: var(--surface); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 16px; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
-.card-title-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
-
-/* ── TRANSACTIONS ── */
-.tx-list { display: flex; flex-direction: column; gap: 6px; }
-.tx-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 11px 14px;
-  background: var(--surface); border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  transition: background var(--transition), box-shadow var(--transition);
-}
-.tx-item:hover { background: var(--surface-2); box-shadow: var(--shadow-sm); }
-.tx-left { display: flex; align-items: center; gap: 11px; }
-.tx-icon { width: 37px; height: 37px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.tx-name   { font-weight: 600; font-size: 13px; }
-.tx-cat    { font-size: 11px; color: var(--muted); margin-top: 1px; display: flex; align-items: center; gap: 4px; }
-.tx-note   { font-size: 11px; color: var(--muted-2); font-style: italic; margin-top: 2px; }
-.tx-amount { font-weight: 700; font-size: 14px; }
-.tx-amount.income  { color: var(--green); }
-.tx-amount.expense { color: var(--red); }
-.tx-delete-btn {
-  opacity: 0; display: flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 6px; border: 1px solid transparent;
-  background: none; cursor: pointer; color: var(--muted);
-  transition: all var(--transition); flex-shrink: 0;
-}
-.tx-item:hover .tx-delete-btn { opacity: 1; }
-.tx-delete-btn:hover { background: var(--red-light); border-color: var(--red-mid); color: var(--red); }
-@media (max-width: 768px) { .tx-delete-btn { opacity: 1; } }
-
-.tx-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
-.tx-summary-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 14px; box-shadow: var(--shadow-sm); }
-.tx-summary-item .lbl { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3px; }
-.tx-summary-item .val { font-size: 16px; font-weight: 700; }
-
-/* ── FORMS ── */
-.form-card { background: var(--surface); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 18px; }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; margin-bottom: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group.full { grid-column: 1 / -1; }
-label { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-input, select, textarea {
-  font-family: inherit; font-size: 13px; padding: 10px 12px;
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  background: var(--surface-2); color: var(--text);
-  outline: none; transition: border var(--transition), background var(--transition); width: 100%;
-}
-input:focus, select:focus, textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
-textarea { resize: vertical; min-height: 60px; }
-
-/* ── BUTTONS ── */
-.btn {
-  font-family: inherit; font-size: 13px; font-weight: 600;
-  padding: 10px 20px; border-radius: var(--radius-sm);
-  cursor: pointer; transition: all var(--transition);
-  border: 1.5px solid transparent;
-  display: inline-flex; align-items: center; gap: 6px;
-  -webkit-tap-highlight-color: transparent; white-space: nowrap;
-}
-.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 1px 3px rgba(37,99,235,.22); }
-.btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); box-shadow: 0 3px 8px rgba(37,99,235,.28); }
-.btn-primary:active { transform: scale(.98); }
-.btn-ghost { background: transparent; color: var(--muted); border-color: var(--border); }
-.btn-ghost:hover { background: var(--bg); color: var(--text); }
-.btn-danger { background: transparent; color: var(--red); border-color: var(--red-mid); }
-.btn-danger:hover { background: var(--red-light); }
-/* v22: outline secondary button */
-.btn-outline { background: transparent; color: var(--primary); border-color: var(--primary-mid); }
-.btn-outline:hover { background: var(--primary-light); }
-.form-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-/* ── GOALS ── */
-.goals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px; }
-.goal-card { background: var(--surface); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: box-shadow var(--transition), transform var(--transition); }
-.goal-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
-.goal-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
-.goal-icon-wrap { width: 44px; height: 44px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.goal-name { font-weight: 700; font-size: 14px; }
-.goal-sub  { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.goal-amounts { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; }
-.goal-amounts .current { font-weight: 700; }
-.goal-amounts .target  { color: var(--muted); }
-.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
-.progress-fill { height: 100%; border-radius: 3px; background: var(--primary); transition: width .6s cubic-bezier(.4,0,.2,1); }
-.progress-footer { display: flex; justify-content: space-between; align-items: center; }
-.progress-pct { font-size: 13px; font-weight: 700; color: var(--primary); }
-
-/* ── INSIGHTS ── */
-.insights-list { display: flex; flex-direction: column; gap: 10px; }
-.insight-card { background: var(--surface); border-radius: var(--radius); padding: 15px 18px; border: 1px solid var(--border); border-left: 3px solid var(--border-2); box-shadow: var(--shadow-sm); display: flex; gap: 13px; align-items: flex-start; transition: box-shadow var(--transition); }
-.insight-card:hover { box-shadow: var(--shadow); }
-.insight-card.warn { border-left-color: var(--amber); }
-.insight-card.good { border-left-color: var(--green); }
-.insight-card.info { border-left-color: var(--primary); }
-.insight-icon  { font-size: 19px; flex-shrink: 0; margin-top: 2px; }
-.insight-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
-.insight-body  { font-size: 13px; color: var(--muted); line-height: 1.65; }
-
-/* ── AI COACH ── */
-.ai-hero {
-  background: #0f172a; border-radius: var(--radius-xl);
-  padding: 26px; margin-bottom: 18px;
-  display: flex; gap: 18px; align-items: flex-start;
-  position: relative; overflow: hidden;
-  border: 1px solid rgba(255,255,255,.05);
-}
-.ai-hero::before {
-  content: ''; position: absolute; top: 0; right: 0;
-  width: 280px; height: 180px;
-  background: radial-gradient(ellipse at top right, rgba(37,99,235,.18) 0%, transparent 60%);
-  pointer-events: none;
-}
-.ai-avatar {
-  width: 50px; height: 50px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(37,99,235,.3);
-}
-.ai-avatar svg { width: 24px; height: 24px; color: #fff; }
-.ai-hero-content { flex: 1; position: relative; z-index: 1; }
-.ai-hero-title { color: #fff; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-.ai-hero-desc  { color: rgba(255,255,255,.52); font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
-.ai-hero-meta  { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.ai-trust-pill {
-  display: flex; align-items: center; gap: 4px; padding: 3px 9px;
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
-  border-radius: 20px; color: rgba(255,255,255,.45);
-  font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
-}
-.ai-trust-pill svg { width: 9px; height: 9px; }
-.ai-result-cards { display: none; flex-direction: column; gap: 10px; margin-top: 18px; }
-.ai-result-cards.show { display: flex; }
-.ai-result-card { background: var(--surface); border-radius: var(--radius); padding: 16px 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.ai-result-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.ai-result-badge { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
-.ai-result-badge.green  { background: var(--green-light); }
-.ai-result-badge.amber  { background: var(--amber-light); }
-.ai-result-badge.blue   { background: var(--primary-light); }
-.ai-result-card-title { font-size: 13px; font-weight: 700; }
-.ai-result-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-.ai-result-list li { font-size: 13px; color: var(--text-2); line-height: 1.6; display: flex; gap: 8px; align-items: flex-start; }
-.ai-result-list li::before { content: ''; display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--muted-2); margin-top: 7px; flex-shrink: 0; }
-.ai-loading { display: none; flex-direction: column; gap: 10px; margin-top: 18px; }
-.ai-loading.show { display: flex; }
-.skeleton { background: linear-gradient(90deg, #f0f4f8 25%, #e8ecf2 50%, #f0f4f8 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-.ai-faq { background: var(--surface); border-radius: var(--radius); padding: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 16px; }
-.ai-faq-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.ai-faq-list { display: flex; flex-direction: column; gap: 6px; }
-.ai-faq-btn {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; padding: 10px 13px;
-  border-radius: var(--radius-sm); border: 1.5px solid var(--border);
-  background: var(--surface-2); color: var(--text-2);
-  font-family: inherit; font-size: 13px; font-weight: 500;
-  cursor: pointer; text-align: left; transition: all var(--transition);
-}
-.ai-faq-btn:hover { background: var(--primary-light); border-color: var(--primary-mid); color: var(--primary); }
-.ai-faq-btn svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
-.ai-faq-btn:hover svg { color: var(--primary); }
-
-/* ── TRUST SECTION (AI Coach page) ── */
-.trust-section { background: var(--surface); border-radius: var(--radius); padding: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 16px; }
-.trust-section-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.trust-section-title svg { width: 13px; height: 13px; }
-.trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 8px; }
-.trust-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--border); }
-.trust-item-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; }
-.trust-item-icon.green  { background: var(--green-light); }
-.trust-item-icon.blue   { background: var(--primary-light); }
-.trust-item-icon.purple { background: var(--purple-light); }
-.trust-item-icon.amber  { background: var(--amber-light); }
-.trust-item-text { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.35; }
-.trust-item-sub  { font-size: 10px; color: var(--muted); margin-top: 1px; }
-
-/* ── BADGES ── */
-.badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600; display: inline-block; }
-.badge-blue   { background: var(--primary-light); color: var(--primary); }
-.badge-green  { background: var(--green-light); color: var(--green); }
-.badge-red    { background: var(--red-light); color: var(--red); }
-.badge-amber  { background: var(--amber-light); color: var(--amber); }
-
-/* ── TABS ── */
-.tabs { display: flex; gap: 2px; background: var(--bg); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 16px; width: fit-content; border: 1px solid var(--border); }
-.tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--muted); font-weight: 600; transition: all var(--transition); }
-.tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
-
-/* ── MODAL ── */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border-radius: var(--radius-xl); padding: 26px; width: 100%; max-width: 560px; margin: 16px; max-height: 92vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: modalIn .2s cubic-bezier(.4,0,.2,1); }
-@keyframes modalIn { from { opacity: 0; transform: scale(.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-.modal-title { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
-.modal-close { background: var(--bg); border: 1px solid var(--border); cursor: pointer; color: var(--muted); font-size: 14px; line-height: 1; padding: 5px 8px; border-radius: 6px; transition: all var(--transition); }
-.modal-close:hover { background: var(--border); color: var(--text); }
-
-/* ── FILTER BAR ── */
-.filter-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
-.filter-bar select, .filter-bar input { width: auto; flex: 1; min-width: 120px; }
-
-/* ── v22: EMPTY STATES ── */
-.empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
-.empty-state svg { width: 72px; height: 72px; margin: 0 auto 16px; display: block; opacity: .4; }
-.empty-state h3 { font-size: 15px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; }
-.empty-state p  { font-size: 13px; line-height: 1.65; color: var(--muted); max-width: 320px; margin: 0 auto; }
-.empty-state-actions { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed; bottom: 24px; right: 22px;
-  display: flex; align-items: center; gap: 9px;
-  background: #1e293b; color: #fff;
-  padding: 11px 16px; border-radius: var(--radius-sm);
-  font-size: 13px; font-weight: 500; z-index: 999;
-  opacity: 0; transform: translateY(10px);
-  transition: all .25s cubic-bezier(.4,0,.2,1);
-  pointer-events: none; max-width: 300px; box-shadow: var(--shadow-lg);
-}
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast-icon { font-size: 15px; }
-
-/* ── CONFIRM DIALOG ── */
-.confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-.confirm-overlay.open { display: flex; }
-.confirm-box { background: var(--surface); border-radius: var(--radius-xl); padding: 26px 22px; width: 100%; max-width: 360px; margin: 16px; box-shadow: var(--shadow-lg); }
-.confirm-box h4 { font-size: 15px; font-weight: 700; margin-bottom: 7px; }
-.confirm-box p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
-.confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
-
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  display: none; position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(15,23,42,.97);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-top: 1px solid rgba(255,255,255,.07);
-  z-index: 90; padding: 0 4px;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-.bottom-nav-inner { display: flex; justify-content: space-around; align-items: stretch; }
-.bn-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 3px; padding: 9px 4px;
-  background: none; border: none; cursor: pointer;
-  color: rgba(255,255,255,.38); font-family: inherit; font-size: 10px; font-weight: 600;
-  transition: color var(--transition); min-width: 0; min-height: 50px;
-  -webkit-tap-highlight-color: transparent;
-}
-.bn-item svg { width: 21px; height: 21px; flex-shrink: 0; }
-.bn-item.active { color: #fff; }
-.bn-item.active svg { color: var(--primary-mid); }
-.bn-item:active { opacity: .7; }
-.bn-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; }
-
-/* ── ACTION SHEET ── */
-.action-sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.48); z-index: 200; align-items: flex-end; justify-content: center; }
-.action-sheet-overlay.open { display: flex; }
-.action-sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; padding: 12px 0 calc(16px + env(safe-area-inset-bottom)); animation: slideUp .22s ease; box-shadow: 0 -8px 40px rgba(0,0,0,.14); }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.action-sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 14px; }
-.action-sheet-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; padding: 0 20px 9px; border-bottom: 1px solid var(--border); margin-bottom: 5px; }
-.action-sheet-item { display: flex; align-items: center; gap: 13px; width: 100%; padding: 13px 20px; background: none; border: none; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 500; color: var(--text); text-align: left; transition: background var(--transition); }
-.action-sheet-item:active { background: var(--bg); }
-.action-sheet-item svg { width: 19px; height: 19px; color: var(--muted); flex-shrink: 0; }
-.action-sheet-item.danger { color: var(--red); }
-.action-sheet-item.danger svg { color: var(--red); }
-.action-sheet-divider { height: 1px; background: var(--border); margin: 3px 0; }
-.action-sheet-cancel { display: flex; align-items: center; justify-content: center; width: calc(100% - 32px); margin: 8px 16px 0; padding: 13px; background: var(--bg); border: none; border-radius: 12px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--primary); }
-.action-sheet-cancel:active { opacity: .7; }
-
-/* ── v22: WELCOME MODAL ── */
-.welcome-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  z-index: 9000; align-items: center; justify-content: center;
-  padding: 20px; backdrop-filter: blur(4px);
-}
-.welcome-overlay.open { display: flex; }
-.welcome-box {
-  background: var(--surface); border-radius: 24px;
-  padding: 36px 32px; width: 100%; max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.2);
-  animation: modalIn .28s cubic-bezier(.4,0,.2,1);
-  text-align: center;
-}
-.welcome-logo {
-  width: 64px; height: 64px;
-  background: #0f172a; border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 20px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.15);
-}
-.welcome-logo svg { width: 34px; height: 34px; }
-.welcome-brand   { font-size: 26px; font-weight: 800; letter-spacing: -.03em; color: var(--text); margin-bottom: 4px; }
-.welcome-sub     { font-size: 13px; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
-/* v25: tagline nhỏ — "Phiên bản hoàn thiện của Trung Tín Fin Coach" */
-.welcome-version { font-size: 12px; color: var(--muted); margin-bottom: 20px; font-style: italic; }
-.welcome-tagline { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; font-style: italic; }
-/* v25: "BY NGUYỄN TRUNG TÍN" — to, chuyên nghiệp, cùng tầm với brand */
-.welcome-by      { font-size: 13px; font-weight: 800; color: var(--text-2);
-                   letter-spacing: .10em; text-transform: uppercase; margin-top: 16px; }
-.welcome-trust { display: flex; flex-direction: column; gap: 9px; margin-bottom: 26px; text-align: left; }
-.welcome-trust-item {
-  display: flex; align-items: center; gap: 11px;
-  padding: 10px 14px;
-  background: var(--bg); border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.welcome-trust-item .w-check { font-size: 14px; }
-.welcome-trust-item .w-text { font-size: 13px; font-weight: 500; color: var(--text-2); }
-.welcome-by { font-size: 11px; color: var(--muted-2); margin-top: 14px; }
-
-
-  to   { transform: translateY(0);    opacity: 1; }
-}
-
-/* Handle bar */
-
-
-/* Header */
-
-
-.wv-platform-icon.messenger { background: linear-gradient(135deg,#0095f6,#5b4ae8); }
-.wv-platform-icon.instagram { background: linear-gradient(135deg,#f09433,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888); }
-.wv-platform-icon.zalo      { background: #005ae0; }
-.wv-platform-icon.tiktok    { background: #010101; }
-.wv-platform-icon.telegram  { background: #2aabee; }
-.wv-platform-icon.generic   { background: #64748b; }
-.wv-platform-icon.line      { background: #06c755; }
-.wv-platform-icon.wechat    { background: #07c160; }
-
-
-
-
-
-/* Warning banner */
-
-
-
-.wv-warning-text b { color: #78350f; }
-
-
-
-
-
-
-
-
-
-/* Actions */
-
-
-.wv-btn-primary:active { background: #1d4ed8; transform: scale(.98); }
-
-
-.wv-btn-secondary:active { background: #e2e8f0; }
-
-/* "Tiếp tục" note */
-
-
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main { margin-left: 0; padding: 14px 14px 88px; }
-  .charts-row { grid-template-columns: 1fr; }
-  .tx-summary { grid-template-columns: 1fr; }
-  .bottom-nav { display: block; }
-  .hero-row { grid-template-columns: 1fr 1fr; }
-  .hero-row > :last-child { grid-column: 1 / -1; }
-  .trust-grid { grid-template-columns: 1fr 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .ai-hero { flex-direction: column; gap: 14px; }
-  .trust-card-dash-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  .trust-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr; }
-  .hero-row { grid-template-columns: 1fr; }
-  .trust-card-dash-grid { grid-template-columns: 1fr; }
-}
-
-/* ── FAB — Floating Action Button (mobile) ── */
-.fab {
-  display: none;
-  position: fixed;
-  bottom: 90px; /* above bottom nav — safe on all phones */
-  right: 20px;
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: var(--primary, #2563eb);
-  color: #fff;
-  border: none;
-  box-shadow: 0 4px 16px rgba(37,99,235,.45);
-  cursor: pointer;
-  align-items: center; justify-content: center;
-  font-size: 28px; line-height: 1;
-  z-index: 89;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-.fab:active { transform: scale(.93); box-shadow: 0 2px 8px rgba(37,99,235,.4); }
-@media (max-width: 768px) { .fab { display: flex; } }
-
-
-/* ── Sample data banner ── */
-.sample-banner {
-  display: none;
-  align-items: center; gap: 10px;
-  background: #fffbeb; border: 1px solid #fde68a;
-  border-radius: 8px; padding: 10px 14px;
-  margin-bottom: 16px; font-size: 13px; color: #92400e;
-}
-.sample-banner.show { display: flex; }
-.sample-banner-text { flex: 1; }
-.sample-banner-clear {
-  font-size: 12px; font-weight: 600; color: #2563eb;
-  background: none; border: none; cursor: pointer;
-  padding: 4px 10px; border-radius: 6px; white-space: nowrap;
-  font-family: inherit;
-}
-.sample-banner-clear:hover { background: #eff6ff; }
-
-
-/* ── ONBOARDING ─────────────────────────────────────────── */
-.onboard-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 1100;
-  background: rgba(15,23,42,.7);
-  align-items: flex-end; justify-content: center;
-}
-.onboard-overlay.open { display: flex; }
-.onboard-sheet {
-  background: #fff;
-  border-radius: 24px 24px 0 0;
-  width: 100%; max-width: 480px;
-  padding: 16px 24px calc(32px + env(safe-area-inset-bottom));
-  animation: slideUp .25s ease;
-}
-.onboard-handle {
-  width: 40px; height: 4px; background: #e2e8f0;
-  border-radius: 2px; margin: 0 auto 24px;
-}
-.onboard-step {
-  display: flex; align-items: flex-start; gap: 16px;
-  margin-bottom: 24px;
-}
-.onboard-step-num {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--primary-light); color: var(--primary);
-  font-size: 16px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.onboard-step-body { flex: 1; }
-.onboard-step-title {
-  font-size: 15px; font-weight: 700; color: #0f172a;
-  margin-bottom: 3px;
-}
-.onboard-step-desc { font-size: 13px; color: #64748b; line-height: 1.5; }
-.onboard-step-icon { font-size: 22px; margin-bottom: 4px; }
-.onboard-divider {
-  width: 2px; height: 20px; background: #e2e8f0;
-  margin: 0 0 4px 17px;
-}
-.onboard-cta {
-  width: 100%; padding: 16px;
-  background: var(--primary); color: #fff;
-  border: none; border-radius: 14px;
-  font-size: 16px; font-weight: 700;
-  cursor: pointer; font-family: inherit;
-  margin-top: 4px;
-}
-.onboard-cta:active { opacity: .88; }
-
-
-/* ── Mobile touch targets (iOS HIG: min 44px) ── */
-@media (max-width: 768px) {
-  .btn, button.btn { min-height: 44px; }
-  .nav-item-mobile { min-height: 48px; }
-  input, select, textarea { min-height: 44px; font-size: 16px !important; }
-  /* Prevent iOS auto-zoom on input focus (font-size must be >= 16px) */
-}
-
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-900: #0d3320;
+    --green-800: #14532d;
+    --green-700: #166534;
+    --green-600: #16a34a;
+    --green-500: #22c55e;
+    --green-400: #4ade80;
+    --green-100: #dcfce7;
+    --green-50:  #f0fdf4;
+    --white:     #ffffff;
+    --gray-900:  #111827;
+    --gray-700:  #374151;
+    --gray-500:  #6b7280;
+    --gray-300:  #d1d5db;
+    --gray-100:  #f3f4f6;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.13);
+    --radius:    14px;
+    --radius-sm: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--green-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 100%);
+    color: var(--white);
+    padding: 28px 20px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+  .brand-name {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .brand-sub {
+    font-size: .85rem;
+    opacity: .85;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .brand-by {
+    font-size: .75rem;
+    opacity: .65;
+    margin-top: 6px;
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green-700);
+    margin: 28px 0 10px;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+    animation: fadeUp .35s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== FORM ===== */
+  .form-row { display: flex; gap: 12px; }
+  .form-group { flex: 1; margin-bottom: 14px; }
+  label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+  }
+  input[type="number"], select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: .95rem;
+    color: var(--gray-900);
+    background: var(--white);
+    transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--green-500);
+    box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+  }
+
+  /* ===== TOGGLE GROUP ===== */
+  .toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toggle-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 9px 6px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    text-align: center;
+    transition: all .2s;
+  }
+  .toggle-btn.active {
+    border-color: var(--green-600);
+    background: var(--green-100);
+    color: var(--green-800);
+  }
+
+  /* ===== BUTTON ===== */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .5px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green-700), var(--green-500));
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(22,163,74,.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-danger {
+    background: var(--white);
+    color: #dc2626;
+    border: 1.5px solid #fca5a5;
+    margin-top: 10px;
+  }
+  .btn-danger:hover { background: #fef2f2; }
+  .btn-sm {
+    width: auto;
+    padding: 9px 18px;
+    font-size: .85rem;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ===== RESULTS ===== */
+  #results { display: none; }
+  .macro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .macro-card {
+    border-radius: var(--radius-sm);
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .macro-card.kcal  { background: linear-gradient(135deg,#fef9c3,#fde68a); }
+  .macro-card.prot  { background: linear-gradient(135deg,#dcfce7,#bbf7d0); }
+  .macro-card.carb  { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+  .macro-card.fat   { background: linear-gradient(135deg,#fce7f3,#fbcfe8); }
+  .macro-val {
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .macro-card.kcal .macro-val  { color: #92400e; }
+  .macro-card.prot .macro-val  { color: var(--green-800); }
+  .macro-card.carb .macro-val  { color: #1e40af; }
+  .macro-card.fat  .macro-val  { color: #9d174d; }
+  .macro-unit { font-size: .75rem; font-weight: 600; opacity: .75; margin-top: 2px; }
+  .macro-label { font-size: .7rem; opacity: .65; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ===== FOOD SUGGESTION ===== */
+  .food-list { list-style: none; }
+  .food-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: .9rem;
+  }
+  .food-list li:last-child { border-bottom: none; }
+  .food-icon { font-size: 1.3rem; }
+  .food-name { flex: 1; font-weight: 600; color: var(--gray-700); }
+  .food-macro { font-size: .78rem; color: var(--gray-500); }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-item { margin-bottom: 14px; }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--gray-700);
+  }
+  .progress-pct { color: var(--green-700); }
+  .progress-track {
+    height: 10px;
+    background: var(--gray-100);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+  }
+  .fill-kcal  { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+  .fill-prot  { background: linear-gradient(90deg,var(--green-700),var(--green-400)); }
+  .fill-carb  { background: linear-gradient(90deg,#3b82f6,#60a5fa); }
+  .fill-fat   { background: linear-gradient(90deg,#ec4899,#f472b6); }
+  .fill-over  { background: linear-gradient(90deg,#ef4444,#f87171) !important; }
+
+  /* ===== LOG FOOD ===== */
+  .log-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 10px;
+  }
+  .log-row .form-group { margin-bottom: 0; }
+  .log-entries { margin-top: 14px; }
+  .log-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 12px;
+    background: var(--green-50);
+    border-radius: var(--radius-sm);
+    margin-bottom: 7px;
+    font-size: .85rem;
+    animation: fadeUp .25s ease both;
+  }
+  .log-entry-name { font-weight: 600; color: var(--gray-700); }
+  .log-entry-macro { color: var(--gray-500); font-size: .78rem; margin-top: 2px; }
+  .log-remove {
+    background: none;
+    border: none;
+    color: var(--gray-300);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color .2s;
+  }
+  .log-remove:hover { color: #ef4444; }
+
+  /* ===== TOTALS ===== */
+  .totals-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .total-chip {
+    flex: 1;
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--gray-100);
+  }
+  .total-chip-val { font-size: 1.15rem; font-weight: 800; color: var(--green-700); }
+  .total-chip-label { font-size: .67rem; color: var(--gray-500); margin-top: 2px; text-transform: uppercase; letter-spacing: .8px; }
+
+  /* ===== EMPTY STATE ===== */
+  .empty {
+    text-align: center;
+    color: var(--gray-500);
+    font-size: .85rem;
+    padding: 20px 0 8px;
+  }
+  .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    font-size: .72rem;
+    color: var(--gray-500);
+    margin-top: 32px;
+    padding: 0 20px;
+  }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
-     v22: WELCOME MODAL (first-time only)
-══════════════════════════════════════ -->
-<div class="welcome-overlay" id="welcome-overlay">
-  <div class="welcome-box">
-    <div class="welcome-logo">
-      <!-- v22: ĐỊNH CƠ logo SVG -->
-      <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="20" width="6" height="10" rx="2" fill="#2563eb"/>
-        <rect x="12" y="13" width="6" height="17" rx="2" fill="#3b82f6"/>
-        <rect x="21" y="7" width="6" height="23" rx="2" fill="#93c5fd"/>
-        <path d="M4 20 L9 14 L18 8 L28 4" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="28" cy="4" r="2" fill="#fbbf24"/>
-      </svg>
-    </div>
-    <div class="welcome-brand">ĐỊNH CƠ</div>
-    <div class="welcome-sub">AI Finance Coach</div>
-    <div class="welcome-version">Phiên bản hoàn thiện của Trung Tín Fin Coach</div>
-    <div class="welcome-trust">
-      <div class="welcome-trust-item">
-        <span class="w-check">✓</span>
-        <span class="w-text">Không cần tài khoản</span>
-      </div>
-      <div class="welcome-trust-item">
-        <span class="w-check">✓</span>
-        <span class="w-text">Không lưu trên cloud</span>
-      </div>
-      <div class="welcome-trust-item">
-        <span class="w-check">✓</span>
-        <span class="w-text">Dữ liệu nằm trên thiết bị của bạn</span>
-      </div>
-      <div class="welcome-trust-item">
-        <span class="w-check">✓</span>
-        <span class="w-text">Có thể sao lưu bất cứ lúc nào</span>
-      </div>
-    </div>
-    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:12px;justify-content:center;" onclick="closeWelcome()" style="width:100%;padding:16px;font-size:16px;border-radius:14px;justify-content:center;min-height:54px;">
-      Bắt đầu →
-    </button>
-    <div class="welcome-by">BY NGUYỄN TRUNG TÍN</div>
-  </div>
-</div>
+<!-- HEADER -->
+<header>
+  <div class="brand-name">ĐỊNH CƠ</div>
+  <div class="brand-sub">Muscle Meal Planner · AI Fitness Coach</div>
+  <div class="brand-by">By Nguyễn Trung Tín</div>
+</header>
 
-<div class="app">
+<div class="container">
 
-<!-- ══════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════ -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">
-      <!-- v22: ĐỊNH CƠ logo inline SVG -->
-      <div class="logo-svg-wrap">
-        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="12" width="4" height="7" rx="1" fill="white" opacity=".9"/>
-          <rect x="7" y="8"  width="4" height="11" rx="1" fill="white" opacity=".85"/>
-          <rect x="13" y="4" width="4" height="15" rx="1" fill="white" opacity=".8"/>
-          <path d="M2.5 12 L8.5 8 L15 4" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
-          <circle cx="15" cy="4" r="1.4" fill="#fbbf24"/>
-        </svg>
-      </div>
-      <div class="logo-text-wrap">
-        <div class="logo-brand">ĐỊNH CƠ</div>
-        <div class="logo-tagline">AI Finance Coach</div>
-        <div class="logo-by">BY NGUYỄN TRUNG TÍN</div>
-      </div>
-    </div>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-group">Tổng quan</div>
-    <button class="nav-item active" onclick="showPage('dashboard',this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-      Dashboard
-    </button>
-    <div class="nav-group">Quản lý</div>
-    <button class="nav-item" onclick="showPage('transactions',this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      Giao dịch
-    </button>
-    <button class="nav-item" onclick="showPage('goals',this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-      Mục tiêu
-    </button>
-    <div class="nav-group">Phân tích</div>
-    <button class="nav-item" onclick="showPage('insights',this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-      Insights
-    </button>
-    <button class="nav-item" onclick="showPage('coach',this)">
-      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-      AI Coach
-    </button>
-  </nav>
-  <div class="sidebar-footer">
-    <div class="trust-mini">
-      <div class="trust-mini-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-        Dữ liệu lưu trên thiết bị
-      </div>
-      <div class="trust-mini-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        Hoạt động hoàn toàn offline
-      </div>
-    </div>
-    <div class="sidebar-actions">
-      <button class="btn-sidebar" onclick="exportData()">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-        Xuất
-      </button>
-      <button class="btn-sidebar" onclick="importData()">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"/></svg>
-        Nhập
-      </button>
-    </div>
-    <button class="btn-reset-sidebar" onclick="resetAllData()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-      Xóa toàn bộ dữ liệu
-    </button>
-  </div>
-</aside>
-
-<!-- ══════════════════════════════════════
-     MAIN
-══════════════════════════════════════ -->
-<main class="main">
-
-<!-- ══ DASHBOARD ══ -->
-<div id="page-dashboard" class="page active">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Dashboard</div>
-      <div class="page-sub" id="dash-month-label">Tổng quan tài chính của bạn</div>
-    </div>
-    <button class="btn btn-primary" onclick="openModal()">
-      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-      Thêm giao dịch
-    </button>
-  </div>
-
-  <!-- Sample data banner -->
-  <div class="sample-banner" id="sample-banner">
-    <span>✨</span>
-    <div class="sample-banner-text">Đang xem <b>dữ liệu mẫu</b>. Xoá để bắt đầu với dữ liệu thật của bạn.</div>
-    <button class="sample-banner-clear" onclick="clearSampleData()">Xoá dữ liệu mẫu</button>
-  </div>
-
-  <!-- v22: Add to Home Screen banner -->
-  <div class="a2hs-banner" id="a2hs-banner">
-    <div class="a2hs-icon">📱</div>
-    <div class="a2hs-content">
-      <div class="a2hs-title">Cài Định Cơ lên màn hình chính</div>
-      <div class="a2hs-sub" id="a2hs-instructions">Safari → Share → Add to Home Screen</div>
-    </div>
-    <button class="a2hs-close" onclick="dismissA2hs()" title="Đóng">×</button>
-  </div>
-
-  <!-- Hero card -->
-  <div class="hero-card" id="hero-card">
-    <div class="hero-greeting">Xin chào 👋</div>
-    <div class="hero-subtitle">Đây là bức tranh tài chính hiện tại của bạn</div>
-    <div class="hero-row">
-      <div class="hero-stat">
-        <div class="hero-stat-label">Tổng tài sản</div>
-        <div class="hero-stat-val" id="hero-assets">—</div>
-        <div class="hero-stat-sub">Tích lũy & mục tiêu</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-label">Tiết kiệm tháng này</div>
-        <div class="hero-stat-val" id="hero-saving">—</div>
-        <div class="hero-stat-sub" id="hero-saving-sub">—</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-label">Tình trạng</div>
-        <div class="hero-stat-sub" style="margin-top:4px;" id="hero-status-label">—</div>
-        <div id="hero-badge"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stat cards -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-label">TỔNG TÀI SẢN</div>
-        <div class="stat-card-icon blue">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-        </div>
-      </div>
-      <div class="stat-val blue" id="d-assets">—</div>
-      <div class="stat-change neutral">Tích lũy + mục tiêu</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-label">THU NHẬP THÁNG NÀY</div>
-        <div class="stat-card-icon green">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8l-8-8-8 8"/></svg>
-        </div>
-      </div>
-      <div class="stat-val green" id="d-income">—</div>
-      <div class="stat-change up" id="d-income-change">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-label">CHI TIÊU THÁNG NÀY</div>
-        <div class="stat-card-icon red">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20V4m-8 8l8 8 8-8"/></svg>
-        </div>
-      </div>
-      <div class="stat-val red" id="d-expense">—</div>
-      <div class="stat-change" id="d-expense-change">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-label">TỶ LỆ TIẾT KIỆM</div>
-        <div class="stat-card-icon purple">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        </div>
-      </div>
-      <div class="stat-val purple" id="d-saving-rate">—</div>
-      <div class="stat-change" id="saving-amount">Đã tiết kiệm: —</div>
-      <div class="stat-change" id="saving-goal">Mục tiêu: 20%</div>
-    </div>
-  </div>
-
-  <!-- Charts -->
-  <div class="charts-row">
-    <div class="card">
-      <div class="card-title"><span class="card-title-dot"></span>Thu chi 6 tháng gần nhất</div>
-      <div style="position:relative;height:220px;"><canvas id="chart-bar"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="card-title-dot"></span>Chi tiêu theo danh mục</div>
-      <div style="position:relative;height:220px;"><canvas id="chart-doughnut"></canvas></div>
-    </div>
-  </div>
-
-  <!-- v22: Trust card on dashboard -->
-  <div class="trust-card-dash">
-    <div class="trust-card-dash-header">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      <span class="trust-card-dash-title">Vì sao Định Cơ an toàn?</span>
-    </div>
-    <div class="trust-card-dash-grid">
-      <div class="trust-check-item">
-        <div class="trust-check-icon">✓</div>
-        <div class="trust-check-text">Không yêu cầu đăng nhập</div>
-      </div>
-      <div class="trust-check-item">
-        <div class="trust-check-icon">✓</div>
-        <div class="trust-check-text">Không gửi dữ liệu lên máy chủ</div>
-      </div>
-      <div class="trust-check-item">
-        <div class="trust-check-icon">✓</div>
-        <div class="trust-check-text">Dữ liệu nằm trên thiết bị của bạn</div>
-      </div>
-      <div class="trust-check-item">
-        <div class="trust-check-icon">✓</div>
-        <div class="trust-check-text">Có thể xuất file backup bất kỳ lúc nào</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Recent transactions -->
+  <!-- ===== THÔNG TIN CÁ NHÂN ===== -->
+  <p class="section-title">Thông tin cá nhân</p>
   <div class="card">
-    <div class="card-title"><span class="card-title-dot"></span>Giao dịch gần nhất</div>
-    <div id="dash-tx" class="tx-list"></div>
-  </div>
-</div>
-
-<!-- ══ TRANSACTIONS ══ -->
-<div id="page-transactions" class="page">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Giao dịch</div>
-      <div class="page-sub">Theo dõi thu nhập và chi tiêu hàng ngày</div>
-    </div>
-    <button class="btn btn-primary" onclick="openModal()">
-      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-      Thêm giao dịch
-    </button>
-  </div>
-  <div class="tx-summary">
-    <div class="tx-summary-item">
-      <div class="lbl">THU NHẬP (đang lọc)</div>
-      <div class="val green" id="filter-income">—</div>
-    </div>
-    <div class="tx-summary-item">
-      <div class="lbl">CHI TIÊU (đang lọc)</div>
-      <div class="val red" id="filter-expense">—</div>
-    </div>
-    <div class="tx-summary-item">
-      <div class="lbl">TIẾT KIỆM (đang lọc)</div>
-      <div class="val" id="filter-saving" style="color:var(--primary)">—</div>
-    </div>
-  </div>
-  <div class="filter-bar">
-    <select id="filter-type" onchange="renderTxList()">
-      <option value="">Tất cả loại</option>
-      <option value="income">Thu nhập</option>
-      <option value="expense">Chi tiêu</option>
-    </select>
-    <select id="filter-cat" onchange="renderTxList()">
-      <option value="">Tất cả danh mục</option>
-      <option>Ăn uống</option><option>Đi lại</option><option>Nhà ở</option>
-      <option>Giải trí</option><option>Học tập</option><option>Lương</option>
-      <option>Thưởng</option><option>Đầu tư</option><option>Khác</option>
-    </select>
-    <input type="month" id="filter-month" onchange="renderTxList()" style="max-width:180px;">
-    <input type="text" id="filter-search" placeholder="Tìm kiếm..." oninput="renderTxList()" style="max-width:200px;">
-    <button class="btn btn-ghost" onclick="clearFilters()">Xóa lọc</button>
-  </div>
-  <div id="tx-list" class="tx-list"></div>
-</div>
-
-<!-- ══ GOALS ══ -->
-<div id="page-goals" class="page">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Mục tiêu tài chính</div>
-      <div class="page-sub">Theo dõi tiến độ các mục tiêu của bạn</div>
-    </div>
-  </div>
-  <div class="form-card">
-    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;">Thêm mục tiêu mới</div>
-    <div class="form-grid">
+    <div class="form-row">
       <div class="form-group">
-        <label>Tên mục tiêu</label>
-        <input id="g-name" type="text" placeholder="VD: Mua xe máy..." />
+        <label>Tuổi</label>
+        <input type="number" id="age" placeholder="25" min="10" max="99">
       </div>
       <div class="form-group">
-        <label>Icon</label>
-        <select id="g-icon">
-          <option>🚗</option><option>🏠</option><option>✈️</option>
-          <option>🛡️</option><option>📚</option><option>💍</option><option>🎯</option>
+        <label>Cân nặng (kg)</label>
+        <input type="number" id="weight" placeholder="70" min="30" max="250">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Chiều cao (cm)</label>
+        <input type="number" id="height" placeholder="170" min="100" max="250">
+      </div>
+      <div class="form-group">
+        <label>Giới tính</label>
+        <select id="gender">
+          <option value="male">Nam</option>
+          <option value="female">Nữ</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Số tiền mục tiêu (VNĐ)</label>
-        <input id="g-target" type="text" inputmode="numeric" placeholder="50.000.000" oninput="this.value=formatVNCurrency(this.value)" />
-      </div>
-      <div class="form-group">
-        <label>Đã tiết kiệm được (VNĐ)</label>
-        <input id="g-current" type="text" inputmode="numeric" placeholder="10.000.000" oninput="this.value=formatVNCurrency(this.value)" />
-      </div>
     </div>
-    <div class="form-actions">
-      <button class="btn btn-primary" onclick="saveGoal()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Thêm mục tiêu
-      </button>
-    </div>
-  </div>
-  <div id="goals-grid" class="goals-grid"></div>
-</div>
 
-<!-- ══ INSIGHTS ══ -->
-<div id="page-insights" class="page">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Insight Center</div>
-      <div class="page-sub">Phân tích tự động dựa trên dữ liệu của bạn</div>
+    <label>Mức vận động</label>
+    <div class="toggle-group" id="activity-group" style="margin-bottom:14px">
+      <button class="toggle-btn active" data-val="1.2">Ít</button>
+      <button class="toggle-btn" data-val="1.55">Trung bình</button>
+      <button class="toggle-btn" data-val="1.725">Cao</button>
     </div>
-  </div>
-  <div id="insights-list" class="insights-list"></div>
-</div>
 
-<!-- ══ AI COACH ══ -->
-<div id="page-coach" class="page">
-  <div class="page-header">
-    <div>
-      <div class="page-title">AI Financial Coach</div>
-      <div class="page-sub">Nhận tư vấn tài chính cá nhân hóa</div>
+    <label>Mục tiêu</label>
+    <div class="toggle-group" id="goal-group">
+      <button class="toggle-btn active" data-val="bulk">Tăng cơ</button>
+      <button class="toggle-btn" data-val="cut">Giảm mỡ</button>
+      <button class="toggle-btn" data-val="maintain">Duy trì</button>
     </div>
   </div>
-  <div class="ai-hero">
-    <div class="ai-avatar">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-    </div>
-    <div class="ai-hero-content">
-      <div class="ai-hero-title">Trợ lý Tài chính Cá nhân</div>
-      <div class="ai-hero-desc">Phân tích thói quen chi tiêu, tỷ lệ tiết kiệm và đưa ra khuyến nghị dựa trên dữ liệu thực tế của bạn.</div>
-      <div class="ai-hero-meta">
-        <button class="btn btn-primary" onclick="runAI()" id="ai-run-btn">
-          <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Phân tích ngay
-        </button>
-        <div class="ai-trust-pill">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-          Không gửi dữ liệu
+
+  <button class="btn btn-primary" onclick="calculate()">⚡ Tính toán ngay</button>
+
+  <!-- ===== KẾT QUẢ ===== -->
+  <div id="results">
+    <p class="section-title">Chỉ số hôm nay</p>
+    <div class="card">
+      <div class="macro-grid">
+        <div class="macro-card kcal">
+          <div class="macro-val" id="res-kcal">—</div>
+          <div class="macro-unit">kcal</div>
+          <div class="macro-label">Calories</div>
         </div>
-        <div class="ai-trust-pill">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          Offline
+        <div class="macro-card prot">
+          <div class="macro-val" id="res-prot">—</div>
+          <div class="macro-unit">g</div>
+          <div class="macro-label">Protein</div>
+        </div>
+        <div class="macro-card carb">
+          <div class="macro-val" id="res-carb">—</div>
+          <div class="macro-unit">g</div>
+          <div class="macro-label">Carb</div>
+        </div>
+        <div class="macro-card fat">
+          <div class="macro-val" id="res-fat">—</div>
+          <div class="macro-unit">g</div>
+          <div class="macro-label">Fat</div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="ai-loading" id="ai-loading">
-    <div class="skeleton" style="height:80px;"></div>
-    <div class="skeleton" style="height:80px;"></div>
-    <div class="skeleton" style="height:80px;"></div>
-  </div>
-  <div class="ai-result-cards" id="ai-result-cards">
-    <div class="ai-result-card">
-      <div class="ai-result-card-header">
-        <div class="ai-result-badge green">✅</div>
-        <div class="ai-result-card-title">Điểm mạnh</div>
+
+    <!-- GỢI Ý THỰC ĐƠN -->
+    <p class="section-title">Gợi ý đạt Protein hôm nay</p>
+    <div class="card">
+      <ul class="food-list" id="suggestion-list"></ul>
+      <p style="font-size:.72rem;color:var(--gray-500);margin-top:10px">* Chỉ mang tính tham khảo. Điều chỉnh theo khẩu vị.</p>
+    </div>
+
+    <!-- THEO DÕI BỮA ĂN -->
+    <p class="section-title">Nhật ký ăn uống hôm nay</p>
+    <div class="card">
+      <div class="log-row">
+        <div class="form-group" style="flex:2">
+          <label>Chọn thực phẩm</label>
+          <select id="food-select"></select>
+        </div>
+        <div class="form-group" style="flex:1">
+          <label>Số lượng</label>
+          <input type="number" id="food-qty" placeholder="100" min="1" max="2000">
+        </div>
       </div>
-      <ul class="ai-result-list" id="ai-strengths"></ul>
-    </div>
-    <div class="ai-result-card">
-      <div class="ai-result-card-header">
-        <div class="ai-result-badge amber">⚠️</div>
-        <div class="ai-result-card-title">Cần cải thiện</div>
+      <button class="btn btn-primary btn-sm" onclick="addFood()">+ Thêm vào nhật ký</button>
+
+      <!-- TỔNG ĂN -->
+      <div class="totals-row">
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-kcal">0</div>
+          <div class="total-chip-label">kcal</div>
+        </div>
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-prot">0g</div>
+          <div class="total-chip-label">Protein</div>
+        </div>
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-carb">0g</div>
+          <div class="total-chip-label">Carb</div>
+        </div>
+        <div class="total-chip">
+          <div class="total-chip-val" id="eaten-fat">0g</div>
+          <div class="total-chip-label">Fat</div>
+        </div>
       </div>
-      <ul class="ai-result-list" id="ai-weaknesses"></ul>
-    </div>
-    <div class="ai-result-card">
-      <div class="ai-result-card-header">
-        <div class="ai-result-badge blue">💡</div>
-        <div class="ai-result-card-title">Hành động đề xuất</div>
+
+      <!-- LOG ENTRIES -->
+      <div class="log-entries" id="log-entries">
+        <div class="empty"><div class="empty-icon">🥗</div>Chưa có thực phẩm nào.<br>Thêm bữa ăn đầu tiên!</div>
       </div>
-      <ul class="ai-result-list" id="ai-actions"></ul>
     </div>
+
+    <!-- PROGRESS -->
+    <p class="section-title">Tiến độ hôm nay</p>
+    <div class="card">
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>🔥 Calories</span>
+          <span class="progress-pct" id="pct-kcal">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-kcal" id="bar-kcal" style="width:0%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>💪 Protein</span>
+          <span class="progress-pct" id="pct-prot">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-prot" id="bar-prot" style="width:0%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>🌾 Carb</span>
+          <span class="progress-pct" id="pct-carb">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-carb" id="bar-carb" style="width:0%"></div></div>
+      </div>
+      <div class="progress-item" style="margin-bottom:0">
+        <div class="progress-header">
+          <span>🥑 Fat</span>
+          <span class="progress-pct" id="pct-fat">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill fill-fat" id="bar-fat" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-danger" onclick="clearToday()">🗑 Xóa dữ liệu hôm nay</button>
   </div>
-  <div class="ai-faq">
-    <div class="ai-faq-title">
-      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Câu hỏi thường gặp
-    </div>
-    <div class="ai-faq-list">
-      <button class="ai-faq-btn" onclick="askAI('Tôi nên tiết kiệm bao nhiêu % thu nhập mỗi tháng?')">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        Tôi nên tiết kiệm bao nhiêu % thu nhập mỗi tháng?
-      </button>
-      <button class="ai-faq-btn" onclick="askAI('Làm sao để giảm chi tiêu ăn uống hiệu quả?')">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        Làm sao để giảm chi tiêu ăn uống hiệu quả?
-      </button>
-      <button class="ai-faq-btn" onclick="askAI('Tôi cần bao nhiêu tháng để đạt mục tiêu tài chính?')">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        Tôi cần bao nhiêu tháng để đạt mục tiêu tài chính?
-      </button>
-    </div>
-  </div>
-  <div class="ai-result-cards" id="ai-faq-result" style="margin-top:0;"></div>
-  <div class="trust-section">
-    <div class="trust-section-title">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      Bảo mật & Quyền riêng tư
-    </div>
-    <div class="trust-grid">
-      <div class="trust-item"><div class="trust-item-icon green">🔒</div><div><div class="trust-item-text">Dữ liệu lưu trên thiết bị</div><div class="trust-item-sub">Không tải lên cloud</div></div></div>
-      <div class="trust-item"><div class="trust-item-icon blue">📴</div><div><div class="trust-item-text">Hoạt động offline 100%</div><div class="trust-item-sub">Không cần internet</div></div></div>
-      <div class="trust-item"><div class="trust-item-icon purple">💾</div><div><div class="trust-item-text">Không gửi dữ liệu</div><div class="trust-item-sub">Phân tích trực tiếp trên máy</div></div></div>
-      <div class="trust-item"><div class="trust-item-icon amber">⚡</div><div><div class="trust-item-text">Không cần đăng ký</div><div class="trust-item-sub">Dùng ngay, không tài khoản</div></div></div>
-    </div>
-  </div>
+
 </div>
 
-</main>
-</div>
+<footer>
+  <p>ĐỊNH CƠ © 2024 · Nguyễn Trung Tín · Mọi số liệu chỉ mang tính tham khảo</p>
+</footer>
 
-<!-- ══ MODAL ══ -->
-<div class="modal-overlay" id="tx-modal" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-title">Thêm giao dịch</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="tabs">
-      <button class="tab active" id="tab-expense" onclick="setTxType('expense',this)">Chi tiêu</button>
-      <button class="tab" id="tab-income" onclick="setTxType('income',this)">Thu nhập</button>
-    </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Ngày *</label>
-        <input id="tx-date" type="date" />
-      </div>
-      <div class="form-group">
-        <label>Số tiền (VNĐ) *</label>
-        <input id="tx-amount" type="text" inputmode="numeric" placeholder="50.000" oninput="this.value=formatVNCurrency(this.value)" />
-      </div>
-      <div class="form-group">
-        <label>Tên giao dịch *</label>
-        <input id="tx-name" type="text" placeholder="VD: Cà phê sáng..." />
-      </div>
-      <div class="form-group">
-        <label>Danh mục</label>
-        <select id="tx-cat">
-          <option>Ăn uống</option><option>Đi lại</option><option>Nhà ở</option>
-          <option>Giải trí</option><option>Học tập</option><option>Khác</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label>Ghi chú</label>
-        <textarea id="tx-note" placeholder="Ghi chú thêm (tuỳ chọn)..."></textarea>
-      </div>
-    </div>
-    <input type="hidden" id="tx-edit-id" value="" />
-    <div class="form-actions">
-      <button class="btn btn-primary" onclick="saveTx()" id="modal-save-btn">Lưu giao dịch</button>
-      <button class="btn btn-ghost" onclick="closeModal()">Hủy</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ BOTTOM NAV ══ -->
-<nav class="bottom-nav">
-  <div class="bottom-nav-inner">
-    <button class="bn-item active" id="bn-dashboard" onclick="showPageMobile('dashboard',this)">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="bn-item" id="bn-transactions" onclick="showPageMobile('transactions',this)">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      <span>Tx</span>
-    </button>
-    <button class="bn-item" id="bn-goals" onclick="showPageMobile('goals',this)">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-      <span>Goals</span>
-    </button>
-    <button class="bn-item" id="bn-insights" onclick="showPageMobile('insights',this)">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-      <span>Report</span>
-    </button>
-    <button class="bn-item" id="bn-coach" onclick="showPageMobile('coach',this)">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-      <span>Coach</span>
-    </button>
-    <button class="bn-item" id="bn-more" onclick="openMoreSheet()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
-      <span>More</span>
-    </button>
-  </div>
-</nav>
-
-<!-- ══ ACTION SHEET ══ -->
-<div class="action-sheet-overlay" id="more-sheet-overlay" onclick="handleSheetOverlay(event)">
-  <div class="action-sheet" id="more-sheet">
-    <div class="action-sheet-handle"></div>
-    <div class="action-sheet-title">Cài đặt & Dữ liệu</div>
-    <button class="action-sheet-item" onclick="exportData()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-      Export Data
-    </button>
-    <button class="action-sheet-item" onclick="importData()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"/></svg>
-      Import Data
-    </button>
-    <div class="action-sheet-divider"></div>
-    <button class="action-sheet-item danger" onclick="resetFromSheet()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-      Reset All Data
-    </button>
-    <button class="action-sheet-cancel" onclick="closeMoreSheet()">Hủy</button>
-  </div>
-</div>
-
-<!-- ══ CONFIRM DIALOG ══ -->
-<div class="confirm-overlay" id="confirm-overlay">
-  <div class="confirm-box">
-    <h4>Xóa giao dịch</h4>
-    <p>Bạn có chắc muốn xóa giao dịch này không?<br>Hành động này không thể hoàn tác.</p>
-    <div class="confirm-actions">
-      <button class="btn btn-ghost" onclick="closeConfirm()">Hủy</button>
-      <button class="btn btn-danger" id="confirm-ok-btn" style="background:var(--red);color:#fff;border-color:var(--red);">Xóa</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ TOAST ══ -->
-<div class="toast" id="toast">
-  <span class="toast-icon" id="toast-icon"></span>
-  <span id="toast-msg"></span>
-</div>
-
-<!-- ══════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════ -->
 <script>
-// ═══════════════════════════════════════════
-// v23: CURRENCY HELPERS — VND formatting
-// ═══════════════════════════════════════════
-
-/**
- * Định dạng số thành chuỗi hiển thị: 50000000 → "50.000.000"
- * CHỈ dùng để hiển thị trong input, KHÔNG lưu vào db.
- */
-function formatVNCurrency(value) {
-  if (!value && value !== 0) return '';
-  const cleanValue = String(value).replace(/\D/g, '');
-  if (!cleanValue) return '';
-  return new Intl.NumberFormat('vi-VN').format(cleanValue);
-}
-
-/**
- * Đọc giá trị thuần từ input đã format → trả về Number.
- * "50.000.000" → 50000000
- */
-function getRawNumber(elementId) {
-  const el = document.getElementById(elementId);
-  if (!el) return 0;
-  const raw = el.value.replace(/\D/g, '');
-  return raw ? parseInt(raw, 10) : 0;
-}
-
-// ═══════════════════════════════════════════
-// DATA LAYER — localStorage schema preserved
-// ═══════════════════════════════════════════
-const STORAGE_KEY = 'sfc_db_v2'; // unchanged from v21
-const EMPTY_DB = () => ({ txType: 'expense', transactions: [], goals: [] });
-
-function loadDb() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      // First-time user — show sample data so app feels alive immediately
-      const isFirstTime = !localStorage.getItem('dc_visited');
-      if (isFirstTime) {
-        localStorage.setItem('dc_visited', '1');
-        return _sampleDb();
-      }
-      return EMPTY_DB();
-    }
-    const parsed = JSON.parse(raw);
-    parsed.transactions = (parsed.transactions || []).map(t => ({note:'', ...t}));
-    parsed.goals   = parsed.goals   || [];
-    parsed.txType  = parsed.txType  || 'expense';
-    return parsed;
-  } catch(e) { return EMPTY_DB(); }
-}
-
-function _sampleDb() {
-  const now   = new Date();
-  const y     = now.getFullYear();
-  const m     = String(now.getMonth() + 1).padStart(2,'0');
-  const prev  = String(now.getMonth() === 0 ? 12 : now.getMonth()).padStart(2,'0');
-  const yp    = now.getMonth() === 0 ? y - 1 : y;
-  return {
-    txType: 'expense',
-    _isSample: true,
-    transactions: [
-      { id:1, name:'Lương tháng này',    amount:15000000, type:'income',  cat:'Lương',    date:`${y}-${m}-01`,   note:'📌 Dữ liệu mẫu — xoá và thêm dữ liệu thật của bạn' },
-      { id:2, name:'Tiền nhà',           amount:4000000,  type:'expense', cat:'Nhà ở',    date:`${y}-${m}-03`,   note:'' },
-      { id:3, name:'Ăn uống cả tháng',   amount:2500000,  type:'expense', cat:'Ăn uống',  date:`${y}-${m}-05`,   note:'' },
-      { id:4, name:'Đi lại / xăng xe',   amount:600000,   type:'expense', cat:'Đi lại',   date:`${y}-${m}-07`,   note:'' },
-      { id:5, name:'Học online',         amount:500000,   type:'expense', cat:'Học tập',  date:`${y}-${m}-10`,   note:'' },
-      { id:6, name:'Thu nhập thêm',      amount:3000000,  type:'income',  cat:'Khác',     date:`${y}-${m}-12`,   note:'Freelance' },
-      { id:7, name:'Giải trí',           amount:400000,   type:'expense', cat:'Giải trí', date:`${y}-${m}-15`,   note:'' },
-      { id:8, name:'Lương tháng trước',  amount:15000000, type:'income',  cat:'Lương',    date:`${yp}-${prev}-01`,note:'' },
-      { id:9, name:'Nhà + sinh hoạt',    amount:7200000,  type:'expense', cat:'Nhà ở',    date:`${yp}-${prev}-05`,note:'' },
-    ],
-    goals: [
-      { id:10, name:'Quỹ dự phòng 3 tháng', icon:'🛡️', target:21000000, current:8000000 },
-      { id:11, name:'Du lịch cuối năm',      icon:'✈️', target:10000000, current:2500000 },
-    ]
-  };
-}
-function saveDb() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
-let db = loadDb();
-
-// ═══════════════════════════════════
-// UTILS
-// ═══════════════════════════════════
-function fmt(n) { return new Intl.NumberFormat('vi-VN').format(Math.round(n)) + 'đ'; }
-function fmtShort(n) {
-  if (n >= 1e9) return (n/1e9).toFixed(1) + ' tỷ';
-  if (n >= 1e6) return (n/1e6).toFixed(1) + ' tr';
-  if (n >= 1e3) return Math.round(n/1e3) + 'k';
-  return Math.round(n);
-}
-
-const catIcon  = {'Ăn uống':'🍜','Đi lại':'🚗','Nhà ở':'🏠','Giải trí':'🎮','Học tập':'📚','Lương':'💰','Thưởng':'🎁','Đầu tư':'📈','Khác':'📦'};
-const catColor = {'Ăn uống':'#fef3c7','Đi lại':'#dbeafe','Nhà ở':'#dcfce7','Giải trí':'#fce7f3','Học tập':'#ede9fe','Lương':'#d1fae5','Thưởng':'#d1fae5','Đầu tư':'#cffafe','Khác':'#f1f5f9'};
-
-function showToast(msg, duration=2400) {
-  const icon = document.getElementById('toast-icon');
-  const text = document.getElementById('toast-msg');
-  const match = msg.match(/^([\u{1F300}-\u{1FAFF}✅❌⚠️🗑💾📋])/u);
-  if (match) { icon.textContent = match[1]; text.textContent = msg.slice(match[0].length).trim(); }
-  else        { icon.textContent = ''; text.textContent = msg; }
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
-}
-
-// ═══════════════════════════════════
-// v22: WELCOME MODAL
-// ═══════════════════════════════════
-function closeWelcome() {
-  localStorage.setItem('welcomeSeen', 'true');
-  document.getElementById('welcome-overlay').classList.remove('open');
-  // Show onboarding only on first-ever open
-  if (!localStorage.getItem('dc_onboarded')) {
-    setTimeout(() => {
-      document.getElementById('onboard-overlay').classList.add('open');
-    }, 300);
-  }
-}
-
-function closeOnboarding() {
-  localStorage.setItem('dc_onboarded', '1');
-  document.getElementById('onboard-overlay').classList.remove('open');
-  // Open "Thêm giao dịch" modal immediately — first action is clear
-  setTimeout(() => openModal(), 200);
-}
-
-function initWelcome() {
-  if (!localStorage.getItem('welcomeSeen')) {
-    document.getElementById('welcome-overlay').classList.add('open');
-  }
-}
-
-// ═══════════════════════════════════
-// v22: ADD TO HOME SCREEN BANNER
-// ═══════════════════════════════════
-function initA2hs() {
-  if (localStorage.getItem('a2hsDissmissed')) {
-    document.getElementById('a2hs-banner').classList.add('hidden');
-    return;
-  }
-  const ua = navigator.userAgent || '';
-  const isIOS     = /iP(hone|ad|od)/i.test(ua);
-  const isAndroid = /Android/i.test(ua);
-  const isStandalone = window.navigator.standalone === true
-    || window.matchMedia('(display-mode: standalone)').matches;
-  if (isStandalone) { document.getElementById('a2hs-banner').classList.add('hidden'); return; }
-
-  const inst = document.getElementById('a2hs-instructions');
-  if (isAndroid)   inst.textContent = 'Chrome → Menu (⋮) → Thêm vào màn hình chính';
-  else if (isIOS)  inst.textContent = 'Safari → Chia sẻ (↑) → Thêm vào màn hình chính';
-  else { document.getElementById('a2hs-banner').classList.add('hidden'); }
-}
-function dismissA2hs() {
-  localStorage.setItem('a2hsDissmissed', 'true');
-  document.getElementById('a2hs-banner').classList.add('hidden');
-}
-
-// ═══════════════════════════════════
-// v22: SAMPLE DATA
-// ═══════════════════════════════════
-function loadSampleData() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const pm = String(now.getMonth()).padStart(2, '0') || '12'; // prev month
-  const py = now.getMonth() === 0 ? y - 1 : y;
-
-  const sampleTx = [
-    { id: Date.now()+1, name: 'Lương tháng này',   amount: 18000000, type: 'income',  cat: 'Lương',    date: `${y}-${m}-01`, note: '' },
-    { id: Date.now()+2, name: 'Tiền nhà',           amount: 3500000,  type: 'expense', cat: 'Nhà ở',    date: `${y}-${m}-02`, note: 'Thuê căn hộ quận 7' },
-    { id: Date.now()+3, name: 'Siêu thị Vinmart',   amount: 850000,   type: 'expense', cat: 'Ăn uống',  date: `${y}-${m}-04`, note: '' },
-    { id: Date.now()+4, name: 'Grab',                amount: 320000,   type: 'expense', cat: 'Đi lại',   date: `${y}-${m}-05`, note: 'Đi làm tuần này' },
-    { id: Date.now()+5, name: 'Cà phê & Ăn sáng',   amount: 450000,   type: 'expense', cat: 'Ăn uống',  date: `${y}-${m}-07`, note: '' },
-    { id: Date.now()+6, name: 'Netflix + Spotify',   amount: 230000,   type: 'expense', cat: 'Giải trí', date: `${y}-${m}-08`, note: '' },
-    { id: Date.now()+7, name: 'Thưởng dự án Q2',     amount: 2500000,  type: 'income',  cat: 'Thưởng',  date: `${y}-${m}-10`, note: '' },
-    { id: Date.now()+8, name: 'Ăn trưa văn phòng',   amount: 680000,   type: 'expense', cat: 'Ăn uống',  date: `${y}-${m}-11`, note: 'Cả tuần' },
-    { id: Date.now()+9, name: 'Xăng xe',             amount: 180000,   type: 'expense', cat: 'Đi lại',   date: `${y}-${m}-12`, note: '' },
-    { id: Date.now()+10,name: 'Khoá học online',     amount: 499000,   type: 'expense', cat: 'Học tập',  date: `${y}-${m}-13`, note: 'Udemy sale' },
-    // prev month income
-    { id: Date.now()+11,name: 'Lương tháng trước',  amount: 18000000, type: 'income',  cat: 'Lương',    date: `${py}-${pm}-01`, note: '' },
-    { id: Date.now()+12,name: 'Tiền nhà tháng trước',amount:3500000,  type: 'expense', cat: 'Nhà ở',    date: `${py}-${pm}-02`, note: '' },
-    { id: Date.now()+13,name: 'Ăn uống tháng trước',amount: 2100000,  type: 'expense', cat: 'Ăn uống',  date: `${py}-${pm}-15`, note: '' },
-    { id: Date.now()+14,name: 'Đi lại tháng trước', amount: 650000,   type: 'expense', cat: 'Đi lại',   date: `${py}-${pm}-20`, note: '' },
-  ];
-
-  const sampleGoals = [
-    { id: Date.now()+100, name: 'Mua xe máy Honda',    icon: '🚗', target: 35000000, current: 12000000 },
-    { id: Date.now()+101, name: 'Quỹ khẩn cấp 6 tháng', icon: '🛡️', target: 60000000, current: 18500000 },
-  ];
-
-  db.transactions = sampleTx;
-  db.goals = sampleGoals;
-  saveDb();
-  renderDashboard();
-  renderGoals();
-  showToast('✅ Đã tải dữ liệu mẫu thành công!');
-}
-
-// ═══════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════
-function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  btn.classList.add('active');
-  if (name === 'dashboard')    renderDashboard();
-  if (name === 'transactions') { setDefaultFilterMonth(); renderTxList(); }
-  if (name === 'goals')        renderGoals();
-  if (name === 'insights')     renderInsights();
-}
-
-// ═══════════════════════════════════
-// MODAL
-// ═══════════════════════════════════
-function openModal(editId) {
-  const modal   = document.getElementById('tx-modal');
-  const titleEl = document.getElementById('modal-title');
-  const saveBtn = document.getElementById('modal-save-btn');
-  if (editId) {
-    const tx = db.transactions.find(t => t.id === editId);
-    if (!tx) return;
-    titleEl.textContent = 'Sửa giao dịch';
-    saveBtn.textContent = 'Cập nhật';
-    document.getElementById('tx-edit-id').value  = editId;
-    document.getElementById('tx-date').value     = tx.date;
-    // PHẦN 4: hiển thị formatted value khi edit (50000000 → "50.000.000")
-    document.getElementById('tx-amount').value   = formatVNCurrency(tx.amount);
-    document.getElementById('tx-name').value     = tx.name;
-    document.getElementById('tx-note').value     = tx.note || '';
-    db.txType = tx.type;
-    document.querySelectorAll('#tx-modal .tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-' + tx.type).classList.add('active');
-    updateCatOptions(tx.type, tx.cat);
-  } else {
-    titleEl.textContent = 'Thêm giao dịch';
-    saveBtn.textContent = 'Lưu giao dịch';
-    document.getElementById('tx-edit-id').value  = '';
-    document.getElementById('tx-date').value     = new Date().toISOString().split('T')[0];
-    document.getElementById('tx-amount').value   = ''; // reset về rỗng khi thêm mới
-    document.getElementById('tx-name').value     = '';
-    document.getElementById('tx-note').value     = '';
-    db.txType = 'expense';
-    document.querySelectorAll('#tx-modal .tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-expense').classList.add('active');
-    updateCatOptions('expense');
-  }
-  modal.classList.add('open');
-  setTimeout(() => document.getElementById('tx-amount').focus(), 50);
-}
-function closeModal() { document.getElementById('tx-modal').classList.remove('open'); }
-function handleOverlayClick(e) { if (e.target === document.getElementById('tx-modal')) closeModal(); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-// ═══════════════════════════════════
-// TX TYPE
-// ═══════════════════════════════════
-function setTxType(type, btn) {
-  db.txType = type;
-  document.querySelectorAll('#tx-modal .tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  updateCatOptions(type);
-}
-function updateCatOptions(type, selected) {
-  const catEl = document.getElementById('tx-cat');
-  const opts = type === 'income'
-    ? ['Lương','Thưởng','Đầu tư','Khác']
-    : ['Ăn uống','Đi lại','Nhà ở','Giải trí','Học tập','Khác'];
-  catEl.innerHTML = opts.map(o => `<option${o===selected?' selected':''}>${o}</option>`).join('');
-}
-
-// ═══════════════════════════════════
-// SAVE TX
-// ═══════════════════════════════════
-function saveTx() {
-  const name   = document.getElementById('tx-name').value.trim();
-  // PHẦN 3: dùng getRawNumber để đọc số thuần từ input đã format
-  const amount = getRawNumber('tx-amount');
-  const date   = document.getElementById('tx-date').value;
-  const note   = document.getElementById('tx-note').value.trim();
-  const editId = document.getElementById('tx-edit-id').value;
-  if (!name)               { alert('Vui lòng nhập tên giao dịch'); return; }
-  if (!amount || amount<=0){ alert('Vui lòng nhập số tiền hợp lệ'); return; }
-  if (!date)               { alert('Vui lòng chọn ngày'); return; }
-
-  // BUG FIX v23: đọc type trực tiếp từ trạng thái DOM (active tab)
-  // thay vì dùng db.txType (global mutable state dễ bị race condition).
-  // Tab "Thu nhập" có class 'active' khi được chọn → đây là source of truth.
-  const txType = document.getElementById('tab-income').classList.contains('active')
-    ? 'income'
-    : 'expense';
-
-  // amount luôn là Number (không bao giờ lưu chuỗi "50.000.000")
-  if (editId) {
-    const idx = db.transactions.findIndex(t => t.id === parseInt(editId));
-    if (idx !== -1) db.transactions[idx] = { ...db.transactions[idx], name, amount, type: txType, cat: document.getElementById('tx-cat').value, date, note };
-    showToast('✅ Đã cập nhật giao dịch');
-  } else {
-    db.transactions.unshift({ id: Date.now(), name, amount, type: txType, cat: document.getElementById('tx-cat').value, date, note });
-    showToast('✅ Đã thêm giao dịch');
-  }
-  // Sync db.txType để openModal() nhớ loại giao dịch vừa dùng
-  db.txType = txType;
-  saveDb(); closeModal(); renderDashboard();
-  const ap = document.querySelector('.page.active');
-  if (ap && ap.id === 'page-transactions') renderTxList();
-}
-
-let _pendingDeleteId = null;
-function deleteTx(id) {
-  _pendingDeleteId = id;
-  document.getElementById('confirm-overlay').classList.add('open');
-  document.getElementById('confirm-ok-btn').onclick = confirmDeleteTx;
-}
-function confirmDeleteTx() {
-  if (_pendingDeleteId === null) return;
-  db.transactions = db.transactions.filter(t => t.id !== _pendingDeleteId);
-  _pendingDeleteId = null;
-  saveDb(); closeConfirm();
-  const ap = document.querySelector('.page.active');
-  if (ap && ap.id === 'page-dashboard')    renderDashboard();
-  if (ap && ap.id === 'page-transactions') renderTxList();
-  if (ap && ap.id !== 'page-dashboard') {
-    const s = calcStats();
-    document.getElementById('d-assets').textContent      = fmt(s.assets);
-    document.getElementById('d-income').textContent      = fmt(s.income);
-    document.getElementById('d-expense').textContent     = fmt(s.expense);
-    document.getElementById('d-saving-rate').textContent = s.savingRate + '%';
-  }
-  showToast('🗑 Đã xóa giao dịch');
-}
-
-// ═══════════════════════════════════
-// EXPORT / IMPORT (preserved exactly)
-// ═══════════════════════════════════
-// ── Platform detection (cho export/import UX) ─────────────────────────────
-const _PLATFORM = (function(){
-  const ua         = navigator.userAgent || '';
-  const isIOS      = /iP(hone|ad|od)/i.test(ua);
-  const isAndroid  = /Android/i.test(ua);
-  const isMessenger= /(FBAN|FBAV|Messenger)/i.test(ua);
-  const isZalo     = /Zalo/i.test(ua);
-  const isWebView  = isMessenger || isZalo
-    || /(Instagram|TikTok|MicroMessenger)/i.test(ua)
-    || (isIOS && /WebKit/i.test(ua) && !/Safari/i.test(ua));
-  return { isIOS, isAndroid, isMessenger, isZalo, isWebView };
-})();
-
-function exportData() {
-  closeMoreSheet();
-  try {
-    const json     = JSON.stringify(db, null, 2);
-    const today    = new Date().toISOString().slice(0,10);
-    const filename = `dinh-co-backup-${today}.json`;
-    const byteSize = new Blob([json]).size;
-
-    // ── Debug log (giúp test trên iPhone/Messenger) ───────────────────
-    console.log('[ĐỊNH CƠ Export]', {
-      file:    filename,
-      size:    `${(byteSize/1024).toFixed(1)} KB`,
-      records: db.transactions?.length ?? 0,
-      goals:   db.goals?.length ?? 0,
-      time:    new Date().toLocaleString('vi-VN'),
-    });
-
-    if (!_PLATFORM.isIOS) {
-      // Android + Desktop: direct <a download> — works natively
-      // Android + Desktop: direct download — works perfectly
-      const blob = new Blob([json], { type: 'application/json' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = filename;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1500);
-      setTimeout(() => _showExportSuccess(filename), 400);
-      return;
-    }
-
-    // iOS Safari: <a download> không hoạt động
-    // Giải pháp: tạo link download + hướng dẫn trực quan từng bước
-    _showIOSExport(json, filename);
-
-  } catch(e) {
-    showToast('❌ Xuất dữ liệu thất bại');
-    console.error('[exportData]', e);
-  }
-}
-
-function _showIOSExport(json, filename) {
-  const blob    = new Blob([json], { type: 'application/octet-stream' });
-  const blobUrl = URL.createObjectURL(blob);
-  const byteSize = blob.size;
-  const isWV     = _PLATFORM.isWebView;
-
-  const ov = document.createElement('div');
-  ov.id    = '_export_modal';
-  ov.style.cssText = [
-    'position:fixed;inset:0;z-index:700',
-    'background:rgba(15,23,42,.7)',
-    'display:flex;align-items:flex-end;justify-content:center',
-    'animation:fadeIn .18s ease',
-  ].join(';');
-
-  ov.innerHTML = `
-    <div style="
-      background:#fff; border-radius:24px 24px 0 0;
-      width:100%; max-width:480px;
-      padding:12px 24px calc(36px + env(safe-area-inset-bottom));
-      animation:slideUp .22s ease;
-    ">
-      <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 20px;"></div>
-
-      <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:4px;">
-        Lưu dữ liệu 💾
-      </div>
-      <div style="font-size:13px;color:#64748b;margin-bottom:20px;">
-        File backup sẽ được lưu vào ứng dụng <b>Files</b> trên iPhone.
-      </div>
-
-      <!-- Tên file -->
-      <div style="
-        background:#f8fafc;border-radius:10px;
-        padding:10px 14px;margin-bottom:20px;
-        display:flex;align-items:center;gap:10px;
-      ">
-        <span style="font-size:20px;">📄</span>
-        <div>
-          <div style="font-size:11px;color:#94a3b8;margin-bottom:2px;">Tên file</div>
-          <div style="font-size:13px;font-weight:600;color:#0f172a;font-family:monospace;">${filename}</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${(byteSize/1024).toFixed(1)} KB · ${db.transactions?.length ?? 0} giao dịch</div>
-        </div>
-      </div>
-
-      <!-- Messenger/WebView cảnh báo nhẹ -->
-      ${isWV ? `<div style="
-        background:#fff7ed;border-left:3px solid #f97316;border-radius:8px;
-        padding:10px 12px;margin-bottom:12px;
-        font-size:12px;color:#9a3412;line-height:1.6;
-      ">
-        ⚠️ Bạn đang dùng qua Messenger/Zalo.<br>
-        File có thể lưu ở vị trí khác.<br>
-        Nếu không tìm được → mở link trong <b>Safari</b>.
-      </div>` : ''}
-
-      <!-- Bước 1: Bấm Lưu file -->
-      <div style="
-        background:#eff6ff;border-radius:12px;
-        padding:14px 16px;margin-bottom:12px;
-      ">
-        <div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:6px;">
-          Bước 1 — Bấm nút bên dưới
-        </div>
-        <div style="font-size:12px;color:#3b82f6;">
-          Safari sẽ hỏi bạn muốn lưu vào đâu.
-        </div>
-      </div>
-
-      <!-- Bước 2: Hướng dẫn sau khi bấm -->
-      <div style="
-        background:#f0fdf4;border-radius:12px;
-        padding:14px 16px;margin-bottom:20px;
-      ">
-        <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px;">
-          Bước 2 — Chọn nơi lưu
-        </div>
-        <div style="font-size:12px;color:#16a34a;line-height:1.8;">
-          📱 Chọn <b>On My iPhone</b> hoặc <b>iCloud Drive</b><br>
-          📁 Chọn thư mục (ví dụ: <b>Downloads</b>)<br>
-          ✅ Bấm <b>Save</b> góc trên phải
-        </div>
-      </div>
-
-      <!-- CTA — dùng <a> với blob, type octet-stream để iOS nhận download -->
-      <a id="_ios_dl_link" href="${blobUrl}" download="${filename}" style="
-        display:flex;align-items:center;justify-content:center;gap:8px;
-        width:100%;padding:16px;
-        background:#2563eb;color:#fff;
-        border:none;border-radius:14px;
-        font-size:16px;font-weight:700;
-        text-decoration:none;
-        cursor:pointer;
-        box-sizing:border-box;
-      ">
-        💾&nbsp; Lưu file backup
-      </a>
-
-      <!-- Fallback: nếu iOS không tải được → copy JSON -->
-      <button id="_ios_copy_btn" onclick="_showExportCopyFallback('${filename.replace(/'/g,"\'")}', document.getElementById('_ios_dl_link').href)" style="
-        width:100%;padding:12px;margin-top:8px;
-        background:#f1f5f9;color:#475569;
-        border:none;border-radius:12px;
-        font-size:14px;font-weight:500;
-        cursor:pointer;font-family:inherit;
-      ">Không lưu được? → Sao chép JSON</button>
-
-      <button onclick="document.getElementById('_export_modal')?.remove()" style="
-        width:100%;padding:12px;margin-top:4px;
-        background:none;border:none;
-        font-size:14px;color:#94a3b8;
-        cursor:pointer;font-family:inherit;
-      ">Hủy</button>
-    </div>
-  `;
-
-  document.body.appendChild(ov);
-  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
-
-  // Khi bấm link download → đóng modal sau 1.5s (cho UX mượt)
-  document.getElementById('_ios_dl_link').addEventListener('click', () => {
-    setTimeout(() => {
-      document.getElementById('_export_modal')?.remove();
-      _showExportSuccess(filename);
-      // Revoke sau khi dùng
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
-    }, 1500);
-  });
-}
-
-function _showExportCopyFallback(filename, blobUrl) {
-  // Fetch blob content để copy
-  fetch(blobUrl)
-    .then(r => r.text())
-    .then(json => {
-      document.getElementById('_export_modal')?.remove();
-      const safe = json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      const ov = document.createElement('div');
-      ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:flex;align-items:flex-end;justify-content:center;';
-      ov.innerHTML = `
-        <div style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 24px calc(32px + env(safe-area-inset-bottom));">
-          <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 16px;"></div>
-          <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Sao chép dữ liệu</div>
-          <div style="font-size:13px;color:#64748b;margin-bottom:12px;">
-            Copy đoạn JSON bên dưới → dán vào <b>Notes</b> hoặc <b>Files</b> để lưu.
-          </div>
-          <textarea readonly id="_cp_ta" style="width:100%;height:140px;font-size:11px;font-family:monospace;padding:10px;border:1px solid #e2e8f0;border-radius:10px;resize:none;background:#f8fafc;">${safe}</textarea>
-          <button onclick="
-            navigator.clipboard?.writeText(document.getElementById('_cp_ta').value)
-              .then(()=>{this.textContent='✅ Đã copy!'})
-              .catch(()=>{document.getElementById('_cp_ta').select();document.execCommand('copy');this.textContent='✅ Đã copy!'})
-          " style="width:100%;padding:14px;margin-top:10px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">
-            📋 Copy JSON
-          </button>
-          <button onclick="this.closest('[style]').remove()" style="width:100%;padding:12px;margin-top:6px;background:none;border:none;font-size:14px;color:#94a3b8;cursor:pointer;font-family:inherit;">Đóng</button>
-        </div>`;
-      document.body.appendChild(ov);
-      ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
-      setTimeout(() => document.getElementById('_cp_ta')?.select(), 300);
-    })
-    .catch(() => showToast('❌ Không thể đọc dữ liệu'));
-}
-
-
-function _showExportSuccess(filename) {
-  const ov = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;z-index:800;background:rgba(15,23,42,.65);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .18s ease;';
-  ov.innerHTML = `
-    <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;">
-      <div style="font-size:48px;margin-bottom:12px;">✅</div>
-      <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:6px;">Backup thành công!</div>
-
-      <!-- Tên file -->
-      <div style="background:#f0fdf4;border-radius:10px;padding:10px 14px;margin:12px 0;text-align:left;">
-        <div style="font-size:11px;color:#16a34a;font-weight:600;margin-bottom:3px;">TÊN FILE</div>
-        <div style="font-size:12px;color:#0f172a;font-family:monospace;word-break:break-all;">${filename}</div>
-      </div>
-
-      <!-- Tìm file ở đâu -->
-      <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px;text-align:left;">
-        <div style="font-size:11px;color:#64748b;font-weight:600;margin-bottom:6px;">TÌM FILE Ở ĐÂU?</div>
-        <div style="font-size:13px;color:#334155;line-height:1.8;">
-          📱 <b>iPhone:</b> Mở <b>Files</b> → <b>Recents</b><br>
-          🤖 <b>Android:</b> Mở <b>Files</b> → <b>Downloads</b><br>
-          💻 <b>Máy tính:</b> Thư mục <b>Downloads</b>
-        </div>
-      </div>
-
-      <!-- Gợi ý lưu cloud -->
-      <div style="font-size:12px;color:#94a3b8;margin-bottom:20px;line-height:1.6;">
-        💡 Để an toàn hơn, hãy copy file vào<br>
-        <b>iCloud Drive</b> hoặc <b>Google Drive</b>
-      </div>
-
-      <button onclick="this.closest('[style]').remove()" style="
-        width:100%;padding:14px;
-        background:#2563eb;color:#fff;
-        border:none;border-radius:12px;
-        font-size:15px;font-weight:700;
-        cursor:pointer;font-family:inherit;
-      ">OK, tôi đã lưu rồi</button>
-    </div>
-  `;
-  document.body.appendChild(ov);
-  ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
-}
-
-// ── IMPORT FLOW — Định Cơ Product Principle: "Chỉ cần chạm" ──────────────
-// Flow: Tap → Hướng dẫn 3 dòng → Chọn file → Xong.
-// Không có confirm đỏ. Không có kỹ thuật. Không có suy nghĩ.
-
-function importData() {
-  if (typeof closeMoreSheet === 'function') closeMoreSheet();
-  _showImportGuide();
-}
-
-function _showImportGuide() {
-  document.getElementById('_import_modal')?.remove();
-
-  const modal = document.createElement('div');
-  modal.id = '_import_modal';
-  modal.style.cssText = [
-    'position:fixed;inset:0;z-index:600',
-    'background:rgba(15,23,42,.65)',
-    'display:flex;align-items:flex-end;justify-content:center',
-    'animation:fadeIn .18s ease',
-  ].join(';');
-
-  modal.innerHTML = `
-    <div style="
-      background:#fff; border-radius:24px 24px 0 0;
-      width:100%; max-width:480px;
-      padding:12px 24px calc(32px + env(safe-area-inset-bottom));
-      animation:slideUp .22s ease;
-    ">
-      <div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 20px;"></div>
-
-      <!-- Header — ngôn ngữ đời thường -->
-      <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:4px;">
-        Khôi phục dữ liệu 📂
-      </div>
-      <div style="font-size:13px;color:#64748b;margin-bottom:16px;">
-        Bạn đã từng bấm <b>"Backup dữ liệu"</b> chưa?<br>
-        Nếu có — làm theo 3 bước dưới đây.
-      </div>
-
-      <!-- Step 1 — Tìm file ở đâu -->
-      <div style="background:#f8fafc;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div style="font-size:14px;font-weight:700;color:#0f172a;">Tìm file backup</div>
-        </div>
-        <div style="font-size:13px;color:#334155;line-height:1.9;padding-left:36px;">
-          📱 <b>iPhone:</b> Mở app <b>Files</b> → bấm <b>Recents</b><br>
-          🤖 <b>Android:</b> Mở app <b>Files</b> → bấm <b>Downloads</b>
-        </div>
-        <div style="margin-top:8px;padding-left:36px;">
-          <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;">File có tên dạng:</div>
-          <div style="font-size:12px;font-family:monospace;background:#eff6ff;color:#1e40af;padding:4px 10px;border-radius:6px;display:inline-block;">dinh-co-backup-2026-06-08.json</div>
-        </div>
-      </div>
-
-      <!-- Step 2 — Mở ĐỊNH CƠ -->
-      <div style="background:#f8fafc;border-radius:12px;padding:14px 16px;margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#eff6ff;color:#2563eb;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:14px;font-weight:700;color:#0f172a;">Quay lại ĐỊNH CƠ</div>
-        </div>
-        <div style="font-size:13px;color:#64748b;padding-left:36px;">
-          Bấm nút <b>"Chọn file"</b> bên dưới → chọn đúng file vừa tìm.
-        </div>
-      </div>
-
-      <!-- Step 3 — Tự động xong -->
-      <div style="background:#f0fdf4;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#dcfce7;color:#16a34a;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div style="font-size:14px;font-weight:700;color:#0f172a;">Xong! Dữ liệu tự khôi phục</div>
-        </div>
-        <div style="font-size:13px;color:#16a34a;padding-left:36px;">
-          Không cần làm thêm gì — app tự tính lại tất cả.
-        </div>
-      </div>
-
-      <!-- Note nhẹ -->
-      <div style="
-        background:#fefce8;border-radius:10px;
-        padding:10px 12px;margin-bottom:16px;
-        display:flex;gap:8px;align-items:flex-start;
-      ">
-        <span style="font-size:14px;flex-shrink:0;">💡</span>
-        <span style="font-size:12px;color:#92400e;line-height:1.5;">
-          Dữ liệu cũ sẽ được thay bằng dữ liệu trong file backup.
-        </span>
-      </div>
-
-      <!-- CTA to, rõ -->
-      <button id="_imp_pick_btn" style="
-        width:100%;padding:16px;
-        background:#2563eb;color:#fff;
-        border:none;border-radius:14px;
-        font-size:16px;font-weight:700;
-        cursor:pointer;font-family:inherit;
-        display:flex;align-items:center;justify-content:center;gap:8px;
-      ">
-        📂&nbsp; Chọn file
-      </button>
-      <button onclick="document.getElementById('_import_modal')?.remove()" style="
-        width:100%;padding:14px;margin-top:8px;
-        background:none;border:none;
-        font-size:15px;color:#94a3b8;
-        cursor:pointer;font-family:inherit;
-      ">Hủy</button>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-  document.getElementById('_imp_pick_btn').addEventListener('click', () => _runFilePicker(modal));
-}
-
-function _runFilePicker(modal) {
-  const btn = document.getElementById('_imp_pick_btn');
-  if (btn) { btn.textContent = '⏳ Đang xử lý...'; btn.disabled = true; }
-
-  const input  = document.createElement('input');
-  input.type   = 'file';
-  input.accept = '.json,application/json';
-
-  input.onchange = function(e) {
-    const file = e.target.files[0];
-    if (!file) {
-      // User cancelled file picker — reset button
-      if (btn) { btn.innerHTML = '📂 Chọn file backup'; btn.disabled = false; }
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      modal?.remove();
-      _showImportResult('error', 'File quá lớn 📁', 'File này quá lớn. Hãy chọn đúng file backup của ĐỊNH CƠ (thường nhỏ hơn 1MB).');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      try {
-        const parsed = JSON.parse(ev.target.result);
-
-        // Validate
-        if (typeof parsed !== 'object' || parsed === null)
-          throw new Error('wrong_format');
-        if (!Array.isArray(parsed.transactions))
-          throw new Error('not_dinh_co');
-
-        // Sanitize transactions
-        const txs = parsed.transactions.map(t => ({
-          id:     t.id     || Date.now() + Math.random(),
-          name:   String(t.name   || '').slice(0, 120),
-          amount: Math.abs(parseFloat(t.amount) || 0),
-          type:   t.type === 'income' ? 'income' : 'expense',
-          cat:    String(t.cat  || 'Khác'),
-          date:   String(t.date || new Date().toISOString().split('T')[0]),
-          note:   String(t.note || '').slice(0, 300),
-        })).filter(t => t.amount > 0 && t.name);
-
-        // Sanitize goals
-        const goals = Array.isArray(parsed.goals)
-          ? parsed.goals.map(g => ({
-              id:      g.id      || Date.now() + Math.random(),
-              name:    String(g.name    || '').slice(0, 80),
-              icon:    String(g.icon    || '🎯'),
-              target:  Math.abs(parseFloat(g.target)  || 0),
-              current: Math.abs(parseFloat(g.current) || 0),
-            })).filter(g => g.name && g.target > 0)
-          : [];
-
-        // Apply
-        db.transactions  = txs;
-        db.goals         = goals;
-        db._isSample     = false;
-        if (parsed.txType) db.txType = parsed.txType;
-        saveDb();
-
-        // Refresh UI
-        renderDashboard();
-        const txPage = document.getElementById('page-transactions');
-        if (txPage?.classList.contains('active')) renderTxList();
-        const goalPage = document.getElementById('page-goals');
-        if (goalPage?.classList.contains('active')) renderGoals();
-
-        // Close guide modal → show success
-        modal?.remove();
-        _showImportResult('success', txs.length, goals.length);
-
-      } catch(err) {
-        console.error('[import]', err);
-        modal?.remove();
-        const _em = err.message || '';
-        if (_em === 'wrong_format') {
-          _showImportResult('error', 'File không đọc được ⚠️', 'File này không phải file backup hợp lệ. Hãy thử chọn file khác.');
-        } else if (_em === 'not_dinh_co') {
-          _showImportResult('error', 'Đây không phải file của ĐỊNH CƠ', 'Hãy chọn file có tên dạng: dinh-co-backup-xxxx.json');
-        } else {
-          _showImportResult('error', 'File bị lỗi hoặc không đầy đủ', 'File backup có thể bị hỏng. Hãy thử backup lại từ đầu.');
-        }
-      }
-    };
-
-    reader.onerror = () => {
-      modal?.remove();
-      _showImportResult('error', 'Không thể đọc file', 'Hãy thử lại hoặc chọn file khác.');
-    };
-
-    reader.readAsText(file, 'UTF-8');
-  };
-
-  input.click();
-}
-
-function _showImportResult(type, arg1, arg2) {
-  const isSuccess = type === 'success';
-  const ov = document.createElement('div');
-  ov.style.cssText = [
-    'position:fixed;inset:0;z-index:600',
-    'background:rgba(15,23,42,.6)',
-    'display:flex;align-items:center;justify-content:center;padding:24px',
-  ].join(';');
-
-  ov.innerHTML = isSuccess ? `
-    <div style="
-      background:#fff;border-radius:20px;
-      padding:32px 24px;max-width:340px;width:100%;
-      text-align:center;animation:popIn .2s ease;
-    ">
-      <div style="
-        width:64px;height:64px;border-radius:50%;
-        background:#f0fdf4;margin:0 auto 16px;
-        display:flex;align-items:center;justify-content:center;
-        font-size:32px;
-      ">✅</div>
-      <div style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:6px;">Dữ liệu đã khôi phục ✓</div>
-      <div style="font-size:14px;color:#64748b;line-height:1.6;margin-bottom:24px;">
-        <b style="color:#0f172a;">${arg1}</b> giao dịch và
-        <b style="color:#0f172a;">${arg2}</b> mục tiêu<br>đã sẵn sàng.
-      </div>
-      <button onclick="this.closest('[style]').remove()" style="
-        width:100%;padding:15px;
-        background:#2563eb;color:#fff;
-        border:none;border-radius:12px;
-        font-size:15px;font-weight:700;
-        cursor:pointer;font-family:inherit;
-      ">Xem Dashboard →</button>
-    </div>
-  ` : `
-    <div style="
-      background:#fff;border-radius:20px;
-      padding:32px 24px;max-width:340px;width:100%;
-      text-align:center;animation:popIn .2s ease;
-    ">
-      <div style="
-        width:64px;height:64px;border-radius:50%;
-        background:#fef2f2;margin:0 auto 16px;
-        display:flex;align-items:center;justify-content:center;
-        font-size:32px;
-      ">⚠️</div>
-      <div style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:6px;">${arg1}</div>
-      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:24px;">${arg2}</div>
-      <button onclick="this.closest('[style]').remove()" style="
-        width:100%;padding:15px;
-        background:#f1f5f9;color:#334155;
-        border:none;border-radius:12px;
-        font-size:15px;font-weight:600;
-        cursor:pointer;font-family:inherit;
-      ">Thử lại</button>
-    </div>
-  `;
-
-  document.body.appendChild(ov);
-  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
-}
-
-function closeConfirm() {
-  document.getElementById('confirm-overlay').classList.remove('open');
-  _pendingDeleteId = null;
-}
-document.addEventListener('click', e => {
-  if (e.target === document.getElementById('confirm-overlay')) closeConfirm();
+// ===== DATABASE THỰC PHẨM VIỆT NAM =====
+// protein/100g, carb/100g, fat/100g, kcal/100g, đơn vị
+const FOODS = [
+  { id:'chicken', name:'Ức gà',       unit:'g',  prot:31,  carb:0,    fat:3.6, kcal:165, icon:'🍗', base:100 },
+  { id:'beef',    name:'Thịt bò',     unit:'g',  prot:26,  carb:0,    fat:17,  kcal:250, icon:'🥩', base:100 },
+  { id:'tilapia', name:'Cá rô phi',   unit:'g',  prot:20,  carb:0,    fat:4,   kcal:128, icon:'🐟', base:100 },
+  { id:'egg',     name:'Trứng gà',    unit:'quả',prot:6,   carb:0.6,  fat:5,   kcal:70,  icon:'🥚', base:1   },
+  { id:'milk',    name:'Sữa tươi',    unit:'ml', prot:3.2, carb:4.8,  fat:3.5, kcal:60,  icon:'🥛', base:100 },
+  { id:'oats',    name:'Yến mạch',    unit:'g',  prot:13,  carb:67,   fat:7,   kcal:389, icon:'🌾', base:100 },
+  { id:'rice',    name:'Cơm trắng',   unit:'g',  prot:2.7, carb:28,   fat:0.3, kcal:130, icon:'🍚', base:100 },
+  { id:'banana',  name:'Chuối',       unit:'quả',prot:1.3, carb:27,   fat:0.3, kcal:105, icon:'🍌', base:1   },
+];
+
+// State
+let targets = { kcal:0, prot:0, carb:0, fat:0 };
+let log = [];      // [{foodId, qty, name, kcal, prot, carb, fat}]
+let activityVal = 1.2;
+let goalVal = 'bulk';
+
+// ===== KHỞI TẠO =====
+window.addEventListener('DOMContentLoaded', () => {
+  buildFoodSelect();
+  loadStorage();
+  setupToggleGroups();
 });
 
-// ═══════════════════════════════════
-// FILTERS & TX LIST
-// ═══════════════════════════════════
-function setDefaultFilterMonth() {
-  const el = document.getElementById('filter-month');
-  if (!el.value) el.value = new Date().toISOString().slice(0, 7);
-}
-function clearFilters() {
-  ['filter-type','filter-cat','filter-month','filter-search'].forEach(id => { document.getElementById(id).value = ''; });
-  renderTxList();
-}
-function getFilteredTx() {
-  const typeF   = document.getElementById('filter-type').value;
-  const catF    = document.getElementById('filter-cat').value;
-  const monthF  = document.getElementById('filter-month').value;
-  const searchF = document.getElementById('filter-search').value.toLowerCase().trim();
-  return db.transactions.filter(t => {
-    if (typeF  && t.type !== typeF) return false;
-    if (catF   && t.cat  !== catF)  return false;
-    if (monthF && !t.date.startsWith(monthF)) return false;
-    if (searchF && !t.name.toLowerCase().includes(searchF) && !(t.note||'').toLowerCase().includes(searchF)) return false;
-    return true;
+function buildFoodSelect() {
+  const sel = document.getElementById('food-select');
+  FOODS.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = `${f.icon} ${f.name} (/${f.unit})`;
+    sel.appendChild(opt);
   });
 }
 
-function renderTxList() {
-  const filtered = getFilteredTx();
-  const el = document.getElementById('tx-list');
-  const inc = filtered.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const exp = filtered.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const sav = inc - exp;
-  document.getElementById('filter-income').textContent  = fmt(inc);
-  document.getElementById('filter-expense').textContent = fmt(exp);
-  const savEl = document.getElementById('filter-saving');
-  savEl.textContent = fmt(sav);
-  savEl.style.color = sav >= 0 ? 'var(--green)' : 'var(--red)';
-
-  if (!filtered.length) {
-    el.innerHTML = `<div class="empty-state">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="2"/>
-        <path d="M26 40h28M34 32l8-8 8 8M42 48l-8 8-8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <h3>Không có giao dịch phù hợp</h3>
-      <p>Thử thay đổi hoặc xóa bộ lọc để xem tất cả giao dịch.</p>
-    </div>`;
-    return;
-  }
-
-  el.innerHTML = filtered.map(t => `
-    <div class="tx-item">
-      <div class="tx-left">
-        <div class="tx-icon" style="background:${catColor[t.cat]||'#f1f5f9'}">${catIcon[t.cat]||'📦'}</div>
-        <div>
-          <div class="tx-name">${t.name}</div>
-          <div class="tx-cat">
-            <span class="badge ${t.type==='income'?'badge-green':'badge-red'}">${t.type==='income'?'Thu':'Chi'}</span>
-            ${t.cat} · ${t.date}
-          </div>
-          ${t.note ? `<div class="tx-note">📝 ${t.note}</div>` : ''}
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
-        <div class="tx-amount ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
-        <div style="display:flex;gap:4px;">
-          <button onclick="openModal(${t.id})" style="background:none;border:1px solid var(--border);cursor:pointer;color:var(--primary);font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;font-family:inherit;transition:all .15s;">Sửa</button>
-          <button onclick="deleteTx(${t.id})" style="background:none;border:1px solid #fecaca;cursor:pointer;color:var(--red);font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;font-family:inherit;transition:all .15s;">Xóa</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-// ═══════════════════════════════════
-// GOALS
-// ═══════════════════════════════════
-function saveGoal() {
-  const name   = document.getElementById('g-name').value.trim();
-  // PHẦN 3: dùng getRawNumber để lấy số thuần từ input đã format
-  const target  = getRawNumber('g-target');
-  const current = getRawNumber('g-current');
-  if (!name || !target) return;
-  db.goals.push({ id: Date.now(), name, icon: document.getElementById('g-icon').value, target, current });
-  ['g-name','g-target','g-current'].forEach(id => document.getElementById(id).value = '');
-  saveDb(); renderGoals();
-  showToast('✅ Đã thêm mục tiêu');
-}
-function deleteGoal(id) {
-  if (!confirm('Xóa mục tiêu này?')) return;
-  db.goals = db.goals.filter(g => g.id !== id);
-  saveDb(); renderGoals();
-  showToast('🗑 Đã xóa mục tiêu');
-}
-
-function renderGoals() {
-  const el = document.getElementById('goals-grid');
-  if (!db.goals.length) {
-    el.innerHTML = `<div class="empty-state">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="2"/>
-        <circle cx="40" cy="40" r="20" stroke="currentColor" stroke-width="2"/>
-        <circle cx="40" cy="40" r="5"  fill="currentColor"/>
-        <line x1="40" y1="4"  x2="40" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="40" y1="65" x2="40" y2="76" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="4"  y1="40" x2="15" y2="40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="65" y1="40" x2="76" y2="40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <h3>Chưa có mục tiêu nào</h3>
-      <p>Thêm mục tiêu tài chính đầu tiên để bắt đầu theo dõi tiến độ tích lũy của bạn.</p>
-    </div>`;
-    return;
-  }
-  const s = calcStats();
-  el.innerHTML = db.goals.map(g => {
-    const pct = Math.min(100, Math.round(g.current / g.target * 100));
-    const remaining = g.target - g.current;
-    const months = s.saving > 0 ? Math.ceil(remaining / s.saving) : '∞';
-    const barColor = pct >= 100 ? 'var(--green)' : pct >= 60 ? 'var(--primary)' : 'var(--amber)';
-    return `<div class="goal-card">
-      <div class="goal-header">
-        <div class="goal-icon-wrap">${g.icon}</div>
-        <div style="flex:1;">
-          <div class="goal-name">${g.name}</div>
-          <div class="goal-sub">~${months} tháng nữa</div>
-        </div>
-        <button onclick="deleteGoal(${g.id})" style="background:none;border:none;cursor:pointer;color:var(--muted-2);font-size:16px;padding:4px;border-radius:4px;line-height:1;">✕</button>
-      </div>
-      <div class="goal-amounts">
-        <span class="current">${fmt(g.current)}</span>
-        <span class="target">${fmt(g.target)}</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width:${pct}%;background:${barColor};"></div>
-      </div>
-      <div class="progress-footer">
-        <span class="progress-pct" style="color:${barColor};">${pct}% hoàn thành</span>
-        <span style="font-size:11px;color:var(--muted);">Còn ${fmt(Math.max(0,remaining))}</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════
-function calcStats() {
-  const now = new Date();
-  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const monthly = db.transactions.filter(t => t.date.startsWith(thisMonth));
-  const income  = monthly.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const expense = monthly.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const saving  = income - expense;
-  const savingRate = income > 0 ? Math.round(saving/income*100) : 0;
-  const assets = db.goals.reduce((s,g)=>s+g.current,0) + saving;
-  return {income, expense, saving, savingRate, assets, thisMonth};
-}
-
-let barChart, doughnutChart;
-
-function clearSampleData() {
-  db.transactions = [];
-  db.goals        = [];
-  db._isSample    = false;
-  saveDb();
-  document.getElementById('sample-banner')?.classList.remove('show');
-  renderDashboard();
-}
-
-function _checkSampleBanner() {
-  const banner = document.getElementById('sample-banner');
-  if (!banner) return;
-  if (db._isSample) banner.classList.add('show');
-  else              banner.classList.remove('show');
-}
-
-function renderDashboard() {
-  _checkSampleBanner();
-  const s   = calcStats();
-  const now = new Date();
-  document.getElementById('dash-month-label').textContent =
-    `Tháng ${now.getMonth()+1}, ${now.getFullYear()} · Tổng quan tài chính của bạn`;
-
-  // Hero
-  document.getElementById('hero-assets').textContent  = fmt(s.assets);
-  document.getElementById('hero-saving').textContent  = fmt(s.saving);
-  document.getElementById('hero-saving-sub').textContent =
-    s.income > 0 ? `Tỷ lệ ${s.savingRate}% thu nhập` : 'Chưa có thu nhập';
-
-  let statusLabel, badgeClass, badgeText;
-  if (s.income <= 0) {
-    statusLabel = 'Chưa có dữ liệu'; badgeClass = 'hero-badge-amber'; badgeText = '⚪ Chưa có dữ liệu';
-  } else if (s.savingRate >= 20) {
-    statusLabel = 'Tài chính ổn định'; badgeClass = 'hero-badge-green'; badgeText = '🟢 Tài chính ổn định';
-  } else if (s.savingRate >= 5) {
-    statusLabel = 'Cần tối ưu chi tiêu'; badgeClass = 'hero-badge-amber'; badgeText = '🟡 Cần tối ưu chi tiêu';
-  } else {
-    statusLabel = 'Chi tiêu vượt kiểm soát'; badgeClass = 'hero-badge-red'; badgeText = '🔴 Chi tiêu vượt kiểm soát';
-  }
-  document.getElementById('hero-status-label').textContent = statusLabel;
-  document.getElementById('hero-badge').innerHTML = `<div class="hero-badge ${badgeClass}">${badgeText}</div>`;
-
-  // Stat cards
-  document.getElementById('d-assets').textContent      = fmt(s.assets);
-  document.getElementById('d-income').textContent      = fmt(s.income);
-  document.getElementById('d-expense').textContent     = fmt(s.expense);
-  document.getElementById('d-saving-rate').textContent = s.savingRate + '%';
-  document.getElementById('saving-amount').textContent = `Đã tiết kiệm: ${fmt(s.saving)}`;
-  document.getElementById('d-income-change').textContent =
-    s.saving >= 0 ? `↑ Tiết kiệm ${fmt(s.saving)}` : `↓ Thâm hụt ${fmt(Math.abs(s.saving))}`;
-  document.getElementById('d-income-change').className =
-    'stat-change ' + (s.saving >= 0 ? 'up' : 'down');
-
-  const goal = 20, diff = s.savingRate - goal;
-  const savGoalEl = document.getElementById('saving-goal');
-  if (s.income <= 0)     { savGoalEl.textContent = 'Chưa có thu nhập'; savGoalEl.className = 'stat-change neutral'; }
-  else if (diff >= 0)    { savGoalEl.textContent = `✓ Vượt mục tiêu +${diff}%`; savGoalEl.className = 'stat-change up'; }
-  else                   { savGoalEl.textContent = `⚠ Còn thiếu ${Math.abs(diff)}%`; savGoalEl.className = 'stat-change down'; }
-
-  // v22: Enhanced empty state with sample data button
-  const recent = [...db.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
-  document.getElementById('dash-tx').innerHTML = recent.length
-    ? recent.map(t => `
-      <div class="tx-item">
-        <div class="tx-left">
-          <div class="tx-icon" style="background:${catColor[t.cat]||'#f1f5f9'}">${catIcon[t.cat]||'📦'}</div>
-          <div>
-            <div class="tx-name">${t.name}</div>
-            <div class="tx-cat">${t.cat} · ${t.date}</div>
-            ${t.note ? `<div class="tx-note">📝 ${t.note}</div>` : ''}
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div class="tx-amount ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
-          <button class="tx-delete-btn" onclick="deleteTx(${t.id})" title="Xóa">
-            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-          </button>
-        </div>
-      </div>`).join('')
-    : `<div class="empty-state" style="padding:36px 20px;">
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:64px;opacity:.35;">
-          <rect x="10" y="18" width="60" height="48" rx="6" stroke="currentColor" stroke-width="2"/>
-          <path d="M10 30h60" stroke="currentColor" stroke-width="2"/>
-          <path d="M22 44h14M22 52h22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="58" cy="46" r="9" fill="currentColor" opacity=".18"/>
-          <path d="M55 46h6M58 43v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <h3>Bạn chưa có dữ liệu tài chính</h3>
-        <p>Hãy thêm giao dịch đầu tiên hoặc dùng dữ liệu mẫu để khám phá ứng dụng.</p>
-        <div class="empty-state-actions">
-          <button class="btn btn-primary" onclick="openModal()">
-            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Thêm giao dịch đầu tiên
-          </button>
-          <button class="btn btn-outline" onclick="loadSampleData()">
-            ✨ Dùng dữ liệu mẫu
-          </button>
-        </div>
-      </div>`;
-
-  renderCharts(s);
-}
-
-function renderCharts(s) {
-  const now = new Date();
-  const labels = [], incomeData = [], expenseData = [];
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    labels.push(`T${d.getMonth()+1}`);
-    const monthTx = db.transactions.filter(t => t.date.startsWith(key));
-    incomeData.push(monthTx.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0));
-    expenseData.push(monthTx.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
-  }
-  if (barChart) barChart.destroy();
-  barChart = new Chart(document.getElementById('chart-bar'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {label:'Thu nhập', data:incomeData,  backgroundColor:'rgba(5,150,105,.7)',  borderRadius:5, borderSkipped:false},
-        {label:'Chi tiêu', data:expenseData, backgroundColor:'rgba(220,38,38,.6)',   borderRadius:5, borderSkipped:false}
-      ]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:12}}},
-      scales:{
-        y:{ticks:{callback:v=>fmtShort(v),font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}},
-        x:{ticks:{font:{size:11}},grid:{display:false}}
-      }
-    }
-  });
-
-  const cats = {};
-  db.transactions.filter(t=>t.type==='expense'&&t.date.startsWith(s.thisMonth))
-    .forEach(t=>{cats[t.cat]=(cats[t.cat]||0)+t.amount;});
-
-  if (doughnutChart) doughnutChart.destroy();
-  if (Object.keys(cats).length) {
-    doughnutChart = new Chart(document.getElementById('chart-doughnut'), {
-      type:'doughnut',
-      data:{
-        labels:Object.keys(cats),
-        datasets:[{data:Object.values(cats),backgroundColor:['#3b82f6','#10b981','#f43f5e','#f59e0b','#8b5cf6','#06b6d4','#84cc16'],borderWidth:0,hoverOffset:5}]
-      },
-      options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8,boxWidth:8}}}}
+function setupToggleGroups() {
+  document.querySelectorAll('.toggle-group').forEach(group => {
+    group.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (group.id === 'activity-group') activityVal = parseFloat(btn.dataset.val);
+        if (group.id === 'goal-group')     goalVal = btn.dataset.val;
+        saveProfile();
+      });
     });
-  } else {
-    const canvas = document.getElementById('chart-doughnut');
-    const ctx    = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle='#a0aec0'; ctx.font='12px Be Vietnam Pro,sans-serif'; ctx.textAlign='center';
-    ctx.fillText('Chưa có dữ liệu',canvas.width/2,canvas.height/2-8);
-    ctx.fillText('chi tiêu tháng này',canvas.width/2,canvas.height/2+10);
-  }
+  });
 }
 
-// ═══════════════════════════════════
-// INSIGHTS
-// ═══════════════════════════════════
-function renderInsights() {
-  const s = calcStats();
-  const cats = {};
-  db.transactions.filter(t=>t.type==='expense'&&t.date.startsWith(s.thisMonth))
-    .forEach(t=>{cats[t.cat]=(cats[t.cat]||0)+t.amount;});
-  const topCat  = Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
-  const foodPct = cats['Ăn uống']&&s.expense>0 ? Math.round(cats['Ăn uống']/s.expense*100) : 0;
-  const months  = db.goals.length ? Math.ceil((db.goals[0].target-db.goals[0].current)/Math.max(s.saving,1)) : 0;
+// ===== TÍNH TOÁN TDEE =====
+function calculate() {
+  const age    = parseFloat(document.getElementById('age').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const gender = document.getElementById('gender').value;
 
-  if (!db.transactions.length) {
-    document.getElementById('insights-list').innerHTML = `<div class="empty-state">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8"  y="50" width="14" height="24" rx="3" stroke="currentColor" stroke-width="2"/>
-        <rect x="28" y="34" width="14" height="40" rx="3" stroke="currentColor" stroke-width="2"/>
-        <rect x="48" y="18" width="14" height="56" rx="3" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      <h3>Chưa đủ dữ liệu để phân tích</h3>
-      <p>Thêm ít nhất vài giao dịch để nhận insight tài chính cá nhân hóa từ Định Cơ.</p>
-      <div class="empty-state-actions">
-        <button class="btn btn-outline" onclick="loadSampleData();showPage('insights',document.querySelector('.nav-item:nth-child(4)') || document.querySelectorAll('.nav-item')[3])">✨ Dùng dữ liệu mẫu</button>
-      </div>
-    </div>`;
+  if (!age || !weight || !height) {
+    alert('Vui lòng nhập đầy đủ tuổi, cân nặng và chiều cao!');
     return;
   }
 
-  const insights = [
-    { type:foodPct>30?'warn':'good', icon:foodPct>30?'⚠️':'✅', title:`Chi tiêu ăn uống chiếm ${foodPct}% tổng chi tiêu`, body:foodPct>30?`Mức lý tưởng là dưới 30%. Thử nấu ăn ở nhà 3 ngày/tuần có thể tiết kiệm khoảng ${fmt(Math.round((cats['Ăn uống']||0)*0.2))} mỗi tháng.`:'Chi tiêu ăn uống của bạn đang ở mức hợp lý. Tiếp tục duy trì!' },
-    { type:s.savingRate>=20?'good':s.savingRate>=10?'info':'warn', icon:s.savingRate>=20?'🎉':s.savingRate>=10?'📊':'⚠️', title:`Tỷ lệ tiết kiệm tháng này: ${s.savingRate}%`, body:s.savingRate>=20?'Xuất sắc! Bạn đang tiết kiệm trên 20% thu nhập – đây là ngưỡng lý tưởng.':s.savingRate>=10?`Bạn đang tiết kiệm ${s.savingRate}%. Cần tăng thêm ${fmt(Math.round(s.income*0.2-s.saving))} để đạt mục tiêu 20%.`:'Tỷ lệ tiết kiệm dưới 10%. Hãy xem lại các chi tiêu có thể cắt giảm ngay.' },
-    { type:'info', icon:'🎯', title:topCat?`Danh mục chi tiêu lớn nhất: ${topCat[0]}`:'Chưa có dữ liệu chi tiêu', body:topCat?`Bạn đã chi ${fmt(topCat[1])} cho ${topCat[0]}, chiếm ${Math.round(topCat[1]/s.expense*100)}% tổng chi tiêu tháng này.`:'Thêm giao dịch chi tiêu để nhận insight.' },
-    { type:months>0?'info':'good', icon:'📅', title:`Mục tiêu "${db.goals[0]?.name||'đầu tiên'}"`, body:db.goals.length?(months<=0?'Mục tiêu đã đạt được! 🎉':`Với tốc độ tiết kiệm ${fmt(s.saving)}/tháng, bạn sẽ đạt mục tiêu "${db.goals[0].name}" sau khoảng ${months} tháng.`):'Hãy thêm mục tiêu tài chính để nhận insight chi tiết hơn.' },
-    { type:'info', icon:'💡', title:'Quy tắc 50-30-20', body:`Với thu nhập ${fmt(s.income)}/tháng: Nhu cầu thiết yếu ≤ ${fmt(s.income*0.5)} (50%), Chi tiêu cá nhân ≤ ${fmt(s.income*0.3)} (30%), Tiết kiệm ≥ ${fmt(s.income*0.2)} (20%). Bạn hiện ${s.savingRate>=20?'đã đạt':'chưa đạt'} mức tiết kiệm tối ưu.` }
+  // Mifflin-St Jeor BMR
+  let bmr;
+  if (gender === 'male') {
+    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+  } else {
+    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+
+  let tdee = bmr * activityVal;
+
+  // Điều chỉnh theo mục tiêu
+  if (goalVal === 'bulk')     tdee = tdee + 300;
+  if (goalVal === 'cut')      tdee = tdee - 400;
+  // maintain: giữ nguyên
+
+  // Macros
+  let protMult = goalVal === 'bulk' ? 2.0 : goalVal === 'cut' ? 2.2 : 1.6;
+  const prot = Math.round(weight * protMult);
+  const fat  = Math.round((tdee * 0.25) / 9);
+  const protKcal = prot * 4;
+  const fatKcal  = fat  * 9;
+  const carb = Math.round((tdee - protKcal - fatKcal) / 4);
+  const kcal = Math.round(tdee);
+
+  targets = { kcal, prot, carb, fat };
+
+  // Hiển thị
+  document.getElementById('res-kcal').textContent = kcal;
+  document.getElementById('res-prot').textContent = prot;
+  document.getElementById('res-carb').textContent = carb;
+  document.getElementById('res-fat').textContent  = fat;
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  buildSuggestion(prot);
+  updateProgress();
+  saveProfile();
+}
+
+// ===== GỢI Ý THỰC ĐƠN =====
+function buildSuggestion(targetProt) {
+  const list = document.getElementById('suggestion-list');
+  list.innerHTML = '';
+
+  // Gợi ý đơn giản: ức gà + trứng + cá + sữa
+  const suggestions = [
+    { food: FOODS[0], qty: Math.round(targetProt * 0.45 / FOODS[0].prot * 100) }, // ức gà 45%
+    { food: FOODS[2], qty: Math.round(targetProt * 0.25 / FOODS[2].prot * 100) }, // cá rô phi 25%
+    { food: FOODS[3], qty: Math.round(targetProt * 0.15 / FOODS[3].prot)       }, // trứng 15%
+    { food: FOODS[4], qty: Math.round(targetProt * 0.15 / FOODS[4].prot * 100) }, // sữa 15%
   ];
 
-  document.getElementById('insights-list').innerHTML = insights.map(i => `
-    <div class="insight-card ${i.type}">
-      <div class="insight-icon">${i.icon}</div>
-      <div>
-        <div class="insight-title">${i.title}</div>
-        <div class="insight-body">${i.body}</div>
-      </div>
-    </div>`).join('');
+  suggestions.forEach(s => {
+    const f = s.food;
+    const qty = s.qty;
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span class="food-icon">${f.icon}</span>
+      <span class="food-name">${f.name}</span>
+      <span class="food-macro">${qty}${f.unit} · ${Math.round(f.prot * qty / f.base)}g protein</span>
+    `;
+    list.appendChild(li);
+  });
 }
 
-// ═══════════════════════════════════
-// AI COACH
-// ═══════════════════════════════════
-function runAI() {
-  const s = calcStats();
-  const cats = {};
-  db.transactions.filter(t=>t.type==='expense'&&t.date.startsWith(s.thisMonth))
-    .forEach(t=>{cats[t.cat]=(cats[t.cat]||0)+t.amount;});
-  const topCat = Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
+// ===== NHẬT KÝ ĂN UỐNG =====
+function addFood() {
+  const sel = document.getElementById('food-select');
+  const qty = parseFloat(document.getElementById('food-qty').value);
+  if (!qty || qty <= 0) { alert('Nhập số lượng hợp lệ!'); return; }
 
-  const loading = document.getElementById('ai-loading');
-  const cards   = document.getElementById('ai-result-cards');
-  const faqRes  = document.getElementById('ai-faq-result');
-  loading.classList.add('show');
-  cards.classList.remove('show');
-  faqRes.classList.remove('show');
-  faqRes.innerHTML = '';
+  const food = FOODS.find(f => f.id === sel.value);
+  const ratio = qty / food.base;
 
-  setTimeout(() => {
-    loading.classList.remove('show');
-    const strengths = [];
-    if (s.savingRate >= 20) strengths.push(`Tỷ lệ tiết kiệm xuất sắc ${s.savingRate}% – top 20% người quản lý tài chính tốt`);
-    if (db.goals.length > 0) strengths.push('Đã đặt mục tiêu tài chính rõ ràng – nền tảng của kế hoạch bền vững');
-    if (db.transactions.length >= 10) strengths.push(`Theo dõi chi tiêu đều đặn với ${db.transactions.length} giao dịch`);
-    if (s.income > 0 && s.expense < s.income) strengths.push(`Thu nhập ${fmt(s.income)} > chi tiêu ${fmt(s.expense)} – dòng tiền dương`);
-    if (!strengths.length) strengths.push('Bắt đầu theo dõi tài chính là bước đầu tiên đúng đắn!');
-
-    const weaknesses = [];
-    if (s.savingRate < 20 && s.income > 0) weaknesses.push(`Tỷ lệ tiết kiệm ${s.savingRate}% chưa đạt 20% – cần tăng thêm ${fmt(Math.round(s.income*0.2-s.saving))}/tháng`);
-    if (topCat && s.expense > 0 && (topCat[1]/s.expense) > 0.35) weaknesses.push(`Chi tiêu ${topCat[0]} chiếm ${Math.round(topCat[1]/s.expense*100)}% – mức cao, nên kiểm soát`);
-    if (s.income <= 0) weaknesses.push('Chưa có thu nhập được ghi nhận tháng này');
-    if (!db.goals.length) weaknesses.push('Chưa có mục tiêu tài chính – khó theo dõi tiến độ dài hạn');
-    if (!weaknesses.length) weaknesses.push('Không phát hiện điểm yếu đáng kể – duy trì tiếp!');
-
-    const actions = [
-      'Áp dụng quy tắc 50-30-20: 50% nhu cầu, 30% cá nhân, 20% tiết kiệm',
-      `Tự động hóa tiết kiệm: chuyển ${fmt(Math.round(s.income*0.2))} vào tài khoản riêng ngay khi nhận lương`,
-      `Xây dựng quỹ khẩn cấp 3-6 tháng (~${fmt(s.expense*4)}) trước khi đầu tư`,
-    ];
-    if (db.goals.length) actions.push(`Ưu tiên mục tiêu "${db.goals[0].name}" – còn ${fmt(db.goals[0].target-db.goals[0].current)}`);
-
-    document.getElementById('ai-strengths').innerHTML  = strengths.map(t=>`<li>${t}</li>`).join('');
-    document.getElementById('ai-weaknesses').innerHTML = weaknesses.map(t=>`<li>${t}</li>`).join('');
-    document.getElementById('ai-actions').innerHTML    = actions.map(t=>`<li>${t}</li>`).join('');
-    cards.classList.add('show');
-  }, 1400);
-}
-
-function askAI(q) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-coach').classList.add('active');
-  document.querySelectorAll('.nav-item')[4]?.classList.add('active');
-
-  const loading = document.getElementById('ai-loading');
-  const cards   = document.getElementById('ai-result-cards');
-  const faqRes  = document.getElementById('ai-faq-result');
-  loading.classList.add('show');
-  cards.classList.remove('show');
-  faqRes.classList.remove('show');
-
-  const s = calcStats();
-  const answers = {
-    'Tôi nên tiết kiệm bao nhiêu % thu nhập mỗi tháng?': {
-      title:'Quy tắc tiết kiệm 20%',
-      body:[`Mức khuyến nghị phổ biến nhất là <strong>20% thu nhập</strong>`,`Với thu nhập ${fmt(s.income)}, mức tiết kiệm lý tưởng là <strong>${fmt(s.income*0.2)}/tháng</strong>`,`Bạn hiện đang tiết kiệm <strong>${s.savingRate}%</strong> (${fmt(s.saving)}). ${s.savingRate>=20?'🎉 Đang đạt mục tiêu!':`Cần tăng thêm ${fmt(Math.round(s.income*0.2-s.saving))}/tháng`}`]
-    },
-    'Làm sao để giảm chi tiêu ăn uống hiệu quả?': {
-      title:'3 cách giảm chi tiêu ăn uống',
-      body:['<strong>Nấu ăn tại nhà</strong> 3-4 ngày/tuần – tiết kiệm 40-50% chi phí ăn uống','<strong>Lên thực đơn tuần</strong> trước khi đi chợ – tránh mua thừa và lãng phí',`<strong>Mang cơm đi làm</strong> 3 ngày/tuần – tiết kiệm ~${fmt(150000*3*4)}/tháng`]
-    },
-    'Tôi cần bao nhiêu tháng để đạt mục tiêu tài chính?': {
-      title:'Dự tính thời gian đạt mục tiêu',
-      body:db.goals.length
-        ? db.goals.map(g=>`<strong>${g.icon} ${g.name}:</strong> Còn ${fmt(g.target-g.current)} – khoảng <strong>${Math.ceil((g.target-g.current)/Math.max(s.saving,1))} tháng</strong>`)
-        : ['Bạn chưa có mục tiêu tài chính. Hãy thêm mục tiêu trong tab "Mục tiêu".']
-    }
+  const entry = {
+    id:   Date.now(),
+    name: food.name,
+    icon: food.icon,
+    unit: food.unit,
+    qty,
+    kcal: Math.round(food.kcal * ratio),
+    prot: Math.round(food.prot * ratio * 10) / 10,
+    carb: Math.round(food.carb * ratio * 10) / 10,
+    fat:  Math.round(food.fat  * ratio * 10) / 10,
   };
 
-  setTimeout(() => {
-    loading.classList.remove('show');
-    const ans = answers[q];
-    if (ans) {
-      faqRes.innerHTML = `<div class="ai-result-card"><div class="ai-result-card-header"><div class="ai-result-badge blue">💬</div><div class="ai-result-card-title">${ans.title}</div></div><ul class="ai-result-list">${ans.body.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
-      faqRes.classList.add('show');
+  log.push(entry);
+  document.getElementById('food-qty').value = '';
+  renderLog();
+  updateProgress();
+  saveLog();
+}
+
+function removeFood(id) {
+  log = log.filter(e => e.id !== id);
+  renderLog();
+  updateProgress();
+  saveLog();
+}
+
+function renderLog() {
+  const container = document.getElementById('log-entries');
+  if (log.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">🥗</div>Chưa có thực phẩm nào.<br>Thêm bữa ăn đầu tiên!</div>';
+    return;
+  }
+  container.innerHTML = '';
+  log.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `
+      <div>
+        <div class="log-entry-name">${e.icon} ${e.name} · ${e.qty}${e.unit}</div>
+        <div class="log-entry-macro">${e.kcal} kcal · P: ${e.prot}g · C: ${e.carb}g · F: ${e.fat}g</div>
+      </div>
+      <button class="log-remove" onclick="removeFood(${e.id})">✕</button>
+    `;
+    container.appendChild(div);
+  });
+
+  // Tổng
+  const totKcal = log.reduce((s,e) => s + e.kcal, 0);
+  const totProt = log.reduce((s,e) => s + e.prot, 0);
+  const totCarb = log.reduce((s,e) => s + e.carb, 0);
+  const totFat  = log.reduce((s,e) => s + e.fat,  0);
+  document.getElementById('eaten-kcal').textContent = totKcal;
+  document.getElementById('eaten-prot').textContent = totProt.toFixed(1) + 'g';
+  document.getElementById('eaten-carb').textContent = totCarb.toFixed(1) + 'g';
+  document.getElementById('eaten-fat').textContent  = totFat.toFixed(1)  + 'g';
+}
+
+// ===== PROGRESS BARS =====
+function updateProgress() {
+  if (!targets.kcal) return;
+
+  const totKcal = log.reduce((s,e) => s + e.kcal, 0);
+  const totProt = log.reduce((s,e) => s + e.prot, 0);
+  const totCarb = log.reduce((s,e) => s + e.carb, 0);
+  const totFat  = log.reduce((s,e) => s + e.fat,  0);
+
+  setBar('kcal', totKcal, targets.kcal, 'fill-kcal');
+  setBar('prot', totProt, targets.prot, 'fill-prot');
+  setBar('carb', totCarb, targets.carb, 'fill-carb');
+  setBar('fat',  totFat,  targets.fat,  'fill-fat');
+}
+
+function setBar(key, eaten, target, fillClass) {
+  const pct = target > 0 ? Math.min(Math.round(eaten / target * 100), 100) : 0;
+  const over = eaten > target;
+  const bar  = document.getElementById('bar-' + key);
+  bar.style.width = pct + '%';
+  bar.className = 'progress-fill ' + (over ? 'fill-over' : fillClass);
+  document.getElementById('pct-' + key).textContent = pct + '%' + (over ? ' ⚠️' : '');
+}
+
+// ===== XÓA DỮ LIỆU =====
+function clearToday() {
+  if (!confirm('Xóa toàn bộ nhật ký hôm nay? Hành động này không thể hoàn tác.')) return;
+  log = [];
+  renderLog();
+  updateProgress();
+  saveLog();
+}
+
+// ===== LOCAL STORAGE =====
+function saveProfile() {
+  localStorage.setItem('dc_profile', JSON.stringify({
+    age:    document.getElementById('age').value,
+    weight: document.getElementById('weight').value,
+    height: document.getElementById('height').value,
+    gender: document.getElementById('gender').value,
+    activity: activityVal,
+    goal: goalVal,
+    targets
+  }));
+}
+
+function saveLog() {
+  const today = new Date().toDateString();
+  localStorage.setItem('dc_log_' + today, JSON.stringify(log));
+}
+
+function loadStorage() {
+  // Profile
+  const p = JSON.parse(localStorage.getItem('dc_profile') || 'null');
+  if (p) {
+    if (p.age)    document.getElementById('age').value    = p.age;
+    if (p.weight) document.getElementById('weight').value = p.weight;
+    if (p.height) document.getElementById('height').value = p.height;
+    if (p.gender) document.getElementById('gender').value = p.gender;
+
+    if (p.activity) {
+      activityVal = p.activity;
+      document.querySelectorAll('#activity-group .toggle-btn').forEach(b => {
+        b.classList.toggle('active', parseFloat(b.dataset.val) === activityVal);
+      });
     }
-  }, 900);
-}
+    if (p.goal) {
+      goalVal = p.goal;
+      document.querySelectorAll('#goal-group .toggle-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.val === goalVal);
+      });
+    }
+    if (p.targets && p.targets.kcal) {
+      targets = p.targets;
+      document.getElementById('res-kcal').textContent = targets.kcal;
+      document.getElementById('res-prot').textContent = targets.prot;
+      document.getElementById('res-carb').textContent = targets.carb;
+      document.getElementById('res-fat').textContent  = targets.fat;
+      document.getElementById('results').style.display = 'block';
+      buildSuggestion(targets.prot);
+    }
+  }
 
-// ═══════════════════════════════════
-// MOBILE NAV
-// ═══════════════════════════════════
-function showPageMobile(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (name === 'dashboard')    renderDashboard();
-  if (name === 'transactions') { setDefaultFilterMonth(); renderTxList(); }
-  if (name === 'goals')        renderGoals();
-  if (name === 'insights')     renderInsights();
+  // Log hôm nay
+  const today = new Date().toDateString();
+  const saved = localStorage.getItem('dc_log_' + today);
+  if (saved) {
+    log = JSON.parse(saved);
+    renderLog();
+    updateProgress();
+  }
 }
-
-// ═══════════════════════════════════
-// MORE SHEET
-// ═══════════════════════════════════
-function openMoreSheet()   { document.getElementById('more-sheet-overlay').classList.add('open'); }
-function closeMoreSheet()  { document.getElementById('more-sheet-overlay').classList.remove('open'); }
-function handleSheetOverlay(e) { if (e.target === document.getElementById('more-sheet-overlay')) closeMoreSheet(); }
-function resetFromSheet() {
-  closeMoreSheet();
-  setTimeout(() => {
-    if (!confirm('Bạn có chắc muốn xóa toàn bộ dữ liệu?\nHành động này không thể hoàn tác.')) return;
-    resetAllData();
-  }, 180);
-}
-
-// ═══════════════════════════════════
-// RESET
-// ═══════════════════════════════════
-function resetAllData() {
-  if (!confirm('⚠️ Xóa toàn bộ giao dịch và mục tiêu?\nHành động này không thể hoàn tác.')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  db = EMPTY_DB();
-  renderDashboard(); renderGoals();
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-dashboard').classList.add('active');
-  document.querySelector('.nav-item').classList.add('active');
-  showToast('🗑 Đã xóa toàn bộ dữ liệu');
-}
-
-// ═══════════════════════════════════
-// INIT
-// ═══════════════════════════════════
-renderDashboard();
-renderGoals();
-initWelcome();
-initA2hs();
 </script>
-
-
-
-<!-- FAB -->
-<button class="fab" onclick="openModal()" aria-label="Thêm giao dịch">+</button>
-
-<!-- ONBOARDING SHEET -->
-<div class="onboard-overlay" id="onboard-overlay">
-  <div class="onboard-sheet">
-    <div class="onboard-handle"></div>
-
-    <div style="font-size:18px;font-weight:800;color:#0f172a;margin-bottom:6px;">
-      Bắt đầu thế nào? 👋
-    </div>
-    <div style="font-size:13px;color:#64748b;margin-bottom:24px;">
-      Chỉ 3 bước. Không cần đọc hướng dẫn.
-    </div>
-
-    <div class="onboard-step">
-      <div class="onboard-step-num">1</div>
-      <div class="onboard-step-body">
-        <div class="onboard-step-icon">💰</div>
-        <div class="onboard-step-title">Nhập thu nhập</div>
-        <div class="onboard-step-desc">Lương, thưởng, hay bất kỳ khoản tiền vào nào.</div>
-      </div>
-    </div>
-    <div class="onboard-divider"></div>
-
-    <div class="onboard-step">
-      <div class="onboard-step-num">2</div>
-      <div class="onboard-step-body">
-        <div class="onboard-step-icon">🛒</div>
-        <div class="onboard-step-title">Nhập chi tiêu</div>
-        <div class="onboard-step-desc">Ăn uống, đi lại, nhà ở... ghi lại khi phát sinh.</div>
-      </div>
-    </div>
-    <div class="onboard-divider"></div>
-
-    <div class="onboard-step">
-      <div class="onboard-step-num">3</div>
-      <div class="onboard-step-body">
-        <div class="onboard-step-icon">🛡️</div>
-        <div class="onboard-step-title">Xem Tấm Khiên của bạn</div>
-        <div class="onboard-step-desc">Dashboard tự tính tỷ lệ tiết kiệm và đưa ra gợi ý.</div>
-      </div>
-    </div>
-
-    <button class="onboard-cta" onclick="closeOnboarding()">
-      Tôi đã hiểu — Bắt đầu ngay
-    </button>
-  </div>
-</div>
-
 </body>
 </html>
